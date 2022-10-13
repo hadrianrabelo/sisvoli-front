@@ -9,7 +9,6 @@ class BackGround extends StatelessWidget {
     return Stack(
       children:<Widget>[
         Container(
-          padding: const EdgeInsets.all(24.0),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topRight,
@@ -21,9 +20,10 @@ class BackGround extends StatelessWidget {
                 stops:[
                   0.5,
                   1,
-                ]
+                ],
             ),
           ),
+          child: child,
         ),
       ],
     );

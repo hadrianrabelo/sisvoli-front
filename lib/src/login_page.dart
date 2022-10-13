@@ -7,9 +7,10 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body:
+      BackGround(child:
       Padding(
+
           padding: const EdgeInsets.all(24.0),
-          BackGround(child: ,),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -69,6 +70,8 @@ class LoginPage extends StatelessWidget {
             ],
           ),
       ),
+      ),
     );
+
   }
 }
