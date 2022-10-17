@@ -17,7 +17,6 @@ class _BackGroundState extends State<BackGround> {
     return Stack(
       children:<Widget>[
         Container(
-          height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerRight ,
