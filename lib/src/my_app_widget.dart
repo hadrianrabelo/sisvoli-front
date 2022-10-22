@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'register_page.dart';
+import 'views/register_page.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
         title: 'Sisvoli',
         debugShowCheckedModeBanner: false,
-        home: RegisterPage()
+        home: RegisterPage(),
     );
   }
 }
