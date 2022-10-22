@@ -9,8 +9,6 @@ class BackGround extends StatefulWidget {
 }
 
 class _BackGroundState extends State<BackGround> {
-  Color leftColor = const Color.fromARGB(255, 11, 11, 11);
-  Color rigthColor = const Color.fromARGB(255, 2, 2, 2);
 
   @override
   Widget build(BuildContext context) {
