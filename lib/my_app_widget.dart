@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'views/register_page.dart';
+import 'package:urnavotos/views/creating_page.dart';
+import '/views/register_page.dart';
 
 
 class MyApp extends StatelessWidget {
