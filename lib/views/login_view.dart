@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/services.dart';
-import '../values/custom_colors.dart';
-import 'background.dart';
-import 'package:get/get.dart';
+import '/values/custom_colors.dart';
+import '/view-models/login_view_model.dart';
+import '../repositories/login_repository.dart';
+import '../values/background.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key,}) : super(key: key);
+class LoginView extends StatefulWidget {
+  const LoginView({Key? key,}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   CustomColors customColors = CustomColors();
+  final  _getCpf = TextEditingController();
+  final  _getPass = TextEditingController();
+  String? setCpf;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: SingleChildScrollView(
-              child: Container(
+              child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 child: Column(
@@ -48,12 +52,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Container(height: MediaQuery.of(context).size.height * .15),
                     TextFormField(
-                        validator: (value){
-                          if(validateCPF(value!)){
-                            return null;
-                          }else{
-                            return "CPF Inválido!";
-                          }
+                      controller: _getCpf,
+                        validator: (cpf){
+                            return LoginViewModel().valiCpf(cpf) ? null : "CPF Inválido!";
                         },
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -63,17 +64,16 @@ class _LoginPageState extends State<LoginPage> {
                             border: OutlineInputBorder(),
                             enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white60)),
                             labelText: "CPF", labelStyle: TextStyle(color: Colors.white60,fontFamily: 'Roboto'),
+                            prefixIcon: Icon(Icons.account_circle, color: Colors.white,),
                         ),
                         style: const TextStyle(color: Colors.white),
-                        keyboardType: TextInputType.number
+                        //keyboardType: TextInputType.number
                       ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      validator: (value){
-                        if(value!.isEmpty){
-                          return "Por favor digite sua senha!";
-                        }
-                        return null;
+                      controller: _getPass,
+                      validator: (password){
+                        return LoginViewModel().valiPassword(password) ? "Senha Inválida!" : null;
                       },
                       style: const TextStyle(color: Colors.white),
                       obscureText: true,
@@ -81,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                           border: OutlineInputBorder(),
                           labelText: "Senha", labelStyle: TextStyle(color: Colors.white60, fontSize: 17,fontFamily: 'Roboto'),
                           enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white60)),
+                          prefixIcon: Icon(Icons.key, color: Colors.white,),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -88,7 +89,9 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                            onPressed: (){},
+                            onPressed: (){
+                             Navigator.pushNamed(context, '/recover_pass');
+                            },
                             child: const Text(
                                 "Esqueceu a senha?",
                                 style: TextStyle(decoration:TextDecoration.underline, color: Color.fromRGBO(255, 255, 255, 0.6),
@@ -103,7 +106,26 @@ class _LoginPageState extends State<LoginPage> {
                         height:50,
                         child:ElevatedButton(
                             onPressed: (){
-                              _formKey.currentState!.validate();
+                              if(_formKey.currentState!.validate()){
+                              setCpf =_getCpf.text.replaceAll(RegExp('[^A-Za-z0-9]'), '');
+                              userLogin(cpf: setCpf,password: _getPass.text).then((value) {
+                                setState(() {
+                                  //print(value['access_token']);
+                                  if(value != null){
+                                    Navigator.pushNamed(context, '/survey');
+                                  }else{
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(backgroundColor: Colors.redAccent,
+                                          content: Text('Por favor verifique sua informações'),
+                                          behavior: SnackBarBehavior.floating,
+                                        )
+                                    );
+                                  }
+                                });
+                              });
+                              }else{
+                                print("Informações Inválidas!");
+                              }
                             },
                             style: ButtonStyle(
                                 backgroundColor: MaterialStatePropertyAll(customColors.getPrimaryButton)),
@@ -132,13 +154,5 @@ class _LoginPageState extends State<LoginPage> {
       ),
       ),
     );
-  }
-  bool validateCPF(String myCpf){
-    if(GetUtils.isCpf(myCpf)){
-      return true;
-    }else{
-      return false;
-    }
-
   }
 }
