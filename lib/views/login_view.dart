@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/services.dart';
 import '/values/custom_colors.dart';
-import '/view-models/login_view_model.dart';
+import '/view-models/validation_view_model.dart';
 import '../repositories/login_repository.dart';
 import '../values/background.dart';
 
@@ -19,7 +19,7 @@ class _LoginViewState extends State<LoginView> {
   final  _getCpf = TextEditingController();
   final  _getPass = TextEditingController();
   String? setCpf;
-
+  ValidationViewModel validation = ValidationViewModel();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,8 +53,9 @@ class _LoginViewState extends State<LoginView> {
                     Container(height: MediaQuery.of(context).size.height * .15),
                     TextFormField(
                       controller: _getCpf,
+                        //onChanged: loginViewModel.(value) => ,
                         validator: (cpf){
-                            return LoginViewModel().valiCpf(cpf) ? null : "CPF Inválido!";
+                            return validation.valiCpf(cpf) ? null : "CPF Inválido!";
                         },
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -73,7 +74,7 @@ class _LoginViewState extends State<LoginView> {
                     TextFormField(
                       controller: _getPass,
                       validator: (password){
-                        return LoginViewModel().valiPassword(password) ? "Senha Inválida!" : null;
+                        return validation.valiPassword(password) ? "Senha Inválida!" : null;
                       },
                       style: const TextStyle(color: Colors.white),
                       obscureText: true,

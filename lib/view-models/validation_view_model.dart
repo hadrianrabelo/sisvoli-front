@@ -1,6 +1,6 @@
 import 'package:urnavotos/models/login_models.dart';
 
-class LoginViewModel{
+class ValidationViewModel{
   //var loginModel = LoginModel();
 
   bool valiCpf(String? getCpf) {

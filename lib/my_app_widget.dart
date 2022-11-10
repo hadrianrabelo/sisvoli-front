@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
      initialRoute: '/login',
       routes: {
         '/login':(context) => const LoginView(),
-        '/survey':(context) => const SurveyView(),
+        //'/survey':(context) => const SurveyView(),
         '/recover_pass':(context) => const RecoverPassView(),
         '/recover_code':(context) => const RecoverCodeView(),
         '/new_pass':(context) => const NewPassView(),
