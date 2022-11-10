@@ -1,7 +1,7 @@
 import 'package:urnavotos/models/login_models.dart';
 
-class LoginViewModel{
-  //var loginModel = LoginModel();
+class ValidationViewModel{
+
 
   bool valiCpf(String? getCpf) {
     if (getCpf!.isEmpty || (getCpf.length == 11)) {

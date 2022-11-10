@@ -1,6 +1,7 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:urnavotos/view-models/validation_view_model.dart';
 import '../repositories/recover_pass_repository.dart';
 import '../values/background.dart';
 import '../values/custom_colors.dart';
@@ -16,7 +17,9 @@ class RecoverPassView extends StatefulWidget {
   final _formKey = GlobalKey<FormState>();
   CustomColors customColors = CustomColors();
   final _getCpf = TextEditingController();
+  ValidationViewModel validation = ValidationViewModel();
   String? setCpf;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,12 +83,7 @@ class RecoverPassView extends StatefulWidget {
                     ),
                     TextFormField(
                         controller: _getCpf,
-                        validator: (cpf) {
-                          if (RecoverViewModel().valiCpf(cpf)) {
-                            return "CPF Inválido!";
-                          } else {
-                            return null;
-                          }
+                        validator: (cpf) { return validation.valiCpf(cpf) ? "CPF Inválido!" : null;
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -118,7 +116,7 @@ class RecoverPassView extends StatefulWidget {
                           _formKey.currentState!.validate();
                           setCpf = _getCpf.text.replaceAll(
                               RegExp('[^A-Za-z0-9]'), '');
-                          recoverPass(cpf: setCpf).then((value) {
+                          await recoverPass(cpf: setCpf).then((value) {
                             setState(() {
                               if (value == 200) {
                                 Navigator.pushNamed(context, '/recover_code');
