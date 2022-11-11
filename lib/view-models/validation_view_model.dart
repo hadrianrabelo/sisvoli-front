@@ -2,7 +2,6 @@ import 'package:urnavotos/models/login_models.dart';
 
 class ValidationViewModel{
 
-
   bool valiCpf(String? getCpf) {
     if (getCpf!.isEmpty || (getCpf.length == 11)) {
       return false;
