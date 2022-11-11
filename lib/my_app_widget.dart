@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         //'/survey':(context) => const SurveyView(),
         '/recover_pass':(context) => const RecoverPassView(),
         '/recover_code':(context) => const RecoverCodeView(),
-        //'/new_pass':(context) => const NewPassView(),
+        '/new_pass':(context) => const NewPassView(),
         //'/register':(context) => LoginView(),
 
       },
