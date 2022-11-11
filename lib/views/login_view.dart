@@ -18,8 +18,8 @@ class _LoginViewState extends State<LoginView> {
   CustomColors customColors = CustomColors();
   final  _getCpf = TextEditingController();
   final  _getPass = TextEditingController();
-  String? setCpf;
   ValidationViewModel validation = ValidationViewModel();
+  String? setCpf;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
