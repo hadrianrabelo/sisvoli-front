@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
         title: 'Sisvoli',
         debugShowCheckedModeBanner: false,
-        home: RegisterPage(),
+        home: CreatingPage(),
     );
   }
 }
