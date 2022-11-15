@@ -1,24 +1,30 @@
 class UserModel {
-  String? accesToken;
+  String? accessToken;
   String? refreshToken;
   String? userCpf;
   String? token;
+  String? newPassword;
 
-  UserModel({this.accesToken, this.refreshToken, this.userCpf, this.token});
+  UserModel({this.accessToken, this.refreshToken, this.userCpf, this.token, this.newPassword});
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    accesToken = json['acces_token'];
+    accessToken = json['access_token'];
     refreshToken = json['refresh_token'];
     userCpf = json['userCpf'];
     token = json['token'];
+    newPassword = json['newPassword'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['acces_token'] = accesToken;
+    data['access_token'] = accessToken;
     data['refresh_token'] = refreshToken;
     data['userCpf'] = userCpf;
     data['token'] = token;
+    data['newPassword'] = newPassword;
     return data;
+  }
+  String toString() {
+    return "$userCpf, $newPassword";
   }
 }
