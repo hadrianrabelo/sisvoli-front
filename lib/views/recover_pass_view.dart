@@ -2,7 +2,6 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:urnavotos/view-models/validation_view_model.dart';
-import '../repositories/recover_pass_repository.dart';
 import '../values/background.dart';
 import '../values/custom_colors.dart';
 import '../view-models/recover_view_model.dart';
@@ -16,7 +15,7 @@ class RecoverPassView extends StatefulWidget {
   class _RecoverPassViewState extends State<RecoverPassView> {
   final _formKey = GlobalKey<FormState>();
   CustomColors customColors = CustomColors();
-  final _getCpf = TextEditingController();
+  final TextEditingController _cpfController = TextEditingController();
   ValidationViewModel validation = ValidationViewModel();
   String? setCpf;
 
@@ -82,8 +81,8 @@ class RecoverPassView extends StatefulWidget {
                           .height * 0.2,
                     ),
                     TextFormField(
-                        controller: _getCpf,
-                        validator: (cpf) { return validation.valiCpf(cpf) ? "CPF Inválido!" : null;
+                        controller: _cpfController,
+                        validator: (cpf) { return validation.valiCpf(cpf) ? null :"CPF Inválido!";
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -114,34 +113,26 @@ class RecoverPassView extends StatefulWidget {
                       child: ElevatedButton(
                         onPressed: () async {
                           _formKey.currentState!.validate();
-                          setCpf = _getCpf.text.replaceAll(
-                              RegExp('[^A-Za-z0-9]'), '');
-                          await recoverPass(cpf: setCpf).then((value) {
-                            setState(() {
-                              if (value == 200) {
-                                Navigator.pushNamed(context, '/recover_code');
-                              } else if (value == 409) {
-                                print(value);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      backgroundColor: Colors.redAccent,
-                                      content: Text('Já foi enviado um código'),
-                                      behavior: SnackBarBehavior.floating,
-                                    )
-                                );
-                                print("Já foi enviado um código");
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      backgroundColor: Colors.redAccent,
-                                      content: Text(
-                                          'Houve um erro, por favor tente novamente mais tarde'),
-                                      behavior: SnackBarBehavior.floating,
-                                    )
-                                );
-                              }
-                            });
-                          });
+                          RecoverViewModel().doCpf(_cpfController.text.replaceAll(RegExp('[^A-Za-z0-9]'), ''));
+                        if(await RecoverViewModel().statusRecoverPass() == 200){
+                            Navigator.pushNamed(context, "/recover_code");
+                          }else if (await RecoverViewModel().statusRecoverPass() == 409){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.redAccent,
+                                  content: Text("Um código já foi enviado. Espere 24 Horas para receber outro."),
+                                  behavior: SnackBarBehavior.floating,
+                                )
+                            );
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.redAccent,
+                                  content: Text("Houve um erro, por favor tente mais tarde."),
+                                  behavior: SnackBarBehavior.floating,
+                                )
+                            );
+                          }
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll(
