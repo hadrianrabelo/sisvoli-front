@@ -16,10 +16,13 @@ class _BackGroundState extends State<BackGround> {
       children:<Widget>[
         Container(
           height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerRight ,
                 colors:[
+                  //Color.fromARGB(255, 255, 255, 255),
+                  //Color.fromARGB(255, 255, 255,255)],
                   Color.fromARGB(255, 11, 11, 11),
                   Color.fromARGB(255, 1, 1, 1)],
               )
