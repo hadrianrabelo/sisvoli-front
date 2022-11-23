@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:urnavotos/views/bottom_bar_view.dart';
 //import '/views/new_pass_view.dart';
 //import '/views/recover_code_view.dart';
 //import '/views/recover_pass_view.dart';
@@ -15,14 +16,16 @@ class MyApp extends StatelessWidget {
       title: 'Sisvoli',
       debugShowCheckedModeBanner: false,
       //home: NewPassView(),
-     initialRoute: '/survey',
+     initialRoute: '/bottom_bar',
       routes: {
-        //'/login':(context) => const LoginView(),
+
+        '/login':(context) => const LoginView(),
         '/survey':(context) => const SurveyView(),
         //'/recover_pass':(context) => const RecoverPassView(),
         //'/recover_code':(context) => const RecoverCodeView(),
         //'/new_pass':(context) => const NewPassView(),
         //'/register':(context) => LoginView(),
+        '/bottom_bar':(context) => BottomBarView(),
 
       },
     );

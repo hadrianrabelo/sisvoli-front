@@ -15,23 +15,10 @@ class SurveyView extends StatefulWidget {
 }
   class _SurveyViewState extends State<SurveyView> {
   late Future<List<SurveyModel>> surveys;
-  late List<Map<String, Object>> _pages;
-  int _selectedPageIndex = 0;
   int currentTab = 0;
 
   @override
  void initState() {
-    _pages  = [
-      {
-        'page': 'surveyPage',
-      },
-      {
-        'page': 'createPage', // vai ser navigator porque nao tem essa bottom appbar na create page
-      },
-      {
-        'page': 'votedPage',
-      }
-    ];
     super.initState();
     authUser().then((onUser) {
       if (!onUser) {
@@ -47,12 +34,6 @@ class SurveyView extends StatefulWidget {
         );*/
       }
     });
-
-  }
-  void _selectPage(int index){
-    setState(() {
-      _selectedPageIndex = index;
-    });
   }
     @override
     Widget build(BuildContext context) {
@@ -63,7 +44,7 @@ class SurveyView extends StatefulWidget {
               SliverAppBar.medium(
                 pinned: true,
                 expandedHeight: MediaQuery.of(context).size.height * 0.15,
-                title:  Text("Enquetes", style: TextStyle(fontFamily: "Inter", color: Colors.white),),
+                title: const Text("Enquetes", style: TextStyle(fontFamily: "Inter", color: Colors.white),),
                 backgroundColor: const Color.fromARGB(255, 1, 1, 1),
                 leading: IconButton(
                   onPressed: (){},
@@ -83,6 +64,8 @@ class SurveyView extends StatefulWidget {
                           itemBuilder: (context, index){
                             SurveyModel survey = snapshot.data![index];
                             return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
                                 Container(
                                   padding: const EdgeInsets.all(10.0),
@@ -93,8 +76,15 @@ class SurveyView extends StatefulWidget {
                                     title: Text(survey.title!, style: const TextStyle(color: Colors.white),),
                                     subtitle: Text(survey.description!, style: const TextStyle(color: Colors.white)),
                                     tileColor: Colors.white,
+                                    trailing: const Icon(Icons.arrow_forward_ios_outlined, color: Colors.white,),
+                                    onTap: (){
+                                      //Navigator.pushNamed(context, '/login');
+                                      //Navigator.push(context, MaterialPageRoute(builder: (context)=> pagina(index)));
+                                      //aqui fica o navigator para cada pagina
+                                    },
                             ),
                             ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                             ],
                             );
                           },
@@ -106,71 +96,10 @@ class SurveyView extends StatefulWidget {
               }),
           ),
         ),
-      extendBody: true,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        backgroundColor: CustomColors().getPrimaryButton,
-        child: const Icon(Icons.add, color: Colors.black),
-      ),
-       bottomNavigationBar: BottomAppBar(
-         shape: const CircularNotchedRectangle(),
-         color: Color.fromARGB(255, 11, 11, 11),
-         child: IconTheme(
-           data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary,),
-           child: Container(
-             height: MediaQuery.of(context).size.height*0.08,
-             child: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceAround,
-               children: [
-                 Row(
-                   children: [
-                     MaterialButton(
-                       onPressed: (){
-                       setState(() {
-                         currentTab = 0;
-                       });
-                     },
-                       child: Column(
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         children: [
-                           Icon(
-                             Icons.format_list_bulleted,
-                             color: currentTab == 0 ? CustomColors().getPrimaryButton : Colors.white ,
-                           ),
-                           Text("Enquetes", style: TextStyle(fontFamily: "Inter",color: currentTab == 0 ? CustomColors().getPrimaryButton : Colors.white)),
-                         ],
-                       ),
-                     ),
-                     SizedBox(width: MediaQuery.of(context).size.width*0.3,),
-                     MaterialButton(
-                       onPressed: (){
-                         setState(() {
-                           currentTab = 1;
-                         });
-                       },
-                       child: Column(
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         children: [
-                           Icon(
-                             Icons.how_to_vote_outlined,
-                             color: currentTab == 1 ? CustomColors().getPrimaryButton : Colors.white,
-                           ),
-                           Text("A Votar", style: TextStyle(fontFamily: "Inter",color: currentTab == 1 ? CustomColors().getPrimaryButton : Colors.white)),
-                         ],
-                       ),
-                     ),
-                   ],
-                 ),
-               ],
-             ),
-           ),
-         ),
-      ),
       );
     }
     Future<List<SurveyModel>> surveyList() async{
-      var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjY5MDQxNjMwfQ.niMvPnGLm--fD2kGOKpxd6LOuDVShS2HQ8yntUeIGe8';
+      var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjY5MjExNTY0fQ._XSxupjHDaEWfpVXLY6Fi6c-QbdlyIlrtCkOM61UGE4';
       var url = Uri.parse('http://10.0.0.136:8080/poll/list/my');
       var response = await http.get(url,
           headers:{
