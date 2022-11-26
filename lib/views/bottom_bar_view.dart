@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:urnavotos/views/login_view.dart';
+import 'package:urnavotos/views/poll_view.dart';
 import 'package:urnavotos/views/survey_view.dart';
 
 import '../values/custom_colors.dart';
@@ -15,8 +16,7 @@ class _BottomBarViewState extends State<BottomBarView> {
   int currentTab = 0;
   final List<Widget> screens =[
     const SurveyView(),
-    const LoginView(),
-    //PollView(), //pagina de enquetes a votar
+    const PollView(),
   ];
 
   Widget currentScreen = const SurveyView();
@@ -34,6 +34,8 @@ class _BottomBarViewState extends State<BottomBarView> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
+          Navigator.pop(context);
+
           Navigator.pushNamed(context, '/login');
         },
         backgroundColor: CustomColors().getPrimaryButton,
@@ -41,7 +43,7 @@ class _BottomBarViewState extends State<BottomBarView> {
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        color: Color.fromARGB(255, 11, 11, 11),
+        color: const Color.fromARGB(255, 11, 11, 11),
         child: IconTheme(
           data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary,),
           child: Container(
@@ -73,7 +75,7 @@ class _BottomBarViewState extends State<BottomBarView> {
                     MaterialButton(
                       onPressed: (){
                         setState(() {
-                          currentScreen = LoginView();
+                          currentScreen = PollView();
                           currentTab = 1;
                         });
                       },
