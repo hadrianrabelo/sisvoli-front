@@ -1,0 +1,5 @@
+class RegisterModel {
+  var getCpf;
+
+
+}
