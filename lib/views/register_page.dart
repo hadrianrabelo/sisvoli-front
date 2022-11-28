@@ -5,6 +5,7 @@ import 'package:urnavotos/sisvoli-modules/register_module.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:urnavotos/view_models/register_page_model.dart';
 import 'package:intl/intl.dart';
+import '../values/custom_colors.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  CustomColors customColors = CustomColors();
   bool _isHiddenPassFirst = true;
   bool _isHiddenPassSecond = true;
   final _formKey = GlobalKey<FormState>();
@@ -137,6 +139,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                         TextFormField(
+                          enableInteractiveSelection: false,
+                          focusNode: AlwaysDisabledFocusNode(),
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(10),
+                            DataInputFormatter(),
+                          ],
                           validator: (value) {
                             return RegisterPageModel().validDate(value);
                           },
@@ -420,9 +428,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             print("tudo certo");
                           }
                         },
-                        style: const ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(
-                              Color.fromRGBO(38, 110, 215, 1.0)),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(customColors.getConfirmButton),
                         ),
                         child: const Text(
                           style: TextStyle(

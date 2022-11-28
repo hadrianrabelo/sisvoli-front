@@ -61,3 +61,8 @@ class RegisterPageModel {
     backgroundColor: Colors.red,
   );
 }
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
