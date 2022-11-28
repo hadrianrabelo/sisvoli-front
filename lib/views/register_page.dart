@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:urnavotos/background.dart';
+import 'package:urnavotos/values/background.dart';
 import 'package:urnavotos/sisvoli-modules/register_module.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:urnavotos/view_models/register_page_model.dart';
@@ -20,7 +20,6 @@ class _RegisterPageState extends State<RegisterPage> {
   String sexo = "";
   String _comparePassword = "";
   String _password = "";
-  SnackBar snackBar = RegisterPageModel().snackBar;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController mailController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();
@@ -31,7 +30,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _dateController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {FocusScope.of(context).unfocus();},
+      child: Scaffold(
         body: BackGround(
           background: Form(
             key: _formKey,
@@ -42,7 +44,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.015,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.015,
                     ),
                     const Text.rich(
                       TextSpan(
@@ -54,7 +59,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    SizedBox(height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.01),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,8 +79,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.03,
-                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.03,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
                         ),
                         TextFormField(
                           validator: (value) {
@@ -322,12 +336,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             height: 30.0,
-                            width: MediaQuery.of(context).size.width * 0.110,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.110,
                             child: Transform.scale(
                               scale: 1.2,
                               child: Radio(
                                 fillColor: MaterialStateColor.resolveWith(
-                                    (states) => Colors.blue),
+                                        (states) => Colors.blue),
                                 value: 'feminino',
                                 groupValue: sexo,
                                 onChanged: (String? value) {
@@ -352,12 +369,15 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           SizedBox(
                             height: 30.0,
-                            width: MediaQuery.of(context).size.width * 0.110,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.110,
                             child: Transform.scale(
                               scale: 1.2,
                               child: Radio(
                                 fillColor: MaterialStateColor.resolveWith(
-                                    (states) => Colors.blue),
+                                        (states) => Colors.blue),
                                 value: 'masculino',
                                 groupValue: sexo,
                                 onChanged: (String? value) {
@@ -385,14 +405,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SizedBox(
                       height: 48,
-                      width: MediaQuery.of(context).size.width * 0.87,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.87,
                       child: ElevatedButton(
                         onPressed: () {
                           var formValid =
                               _formKey.currentState?.validate() ?? false;
                           if (RegisterPageModel().selectedIcon(sexo)) {
                             ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
+                                .showSnackBar(RegisterPageModel().snackBar);
                           } else if (formValid) {
                             print("tudo certo");
                           }
@@ -441,5 +464,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 }
