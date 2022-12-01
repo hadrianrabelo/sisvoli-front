@@ -56,11 +56,38 @@ class RegisterPageModel {
     return null;
   }
 
-  SnackBar snackBar = const SnackBar(
+  SnackBar snackBarGender = const SnackBar(
     content: Text("Seleção de gênero obrigatória"),
     backgroundColor: Colors.red,
   );
+
+  SnackBar snackBarSucess = const SnackBar(
+    content: Text("Cadastro feito com sucesso"),
+    backgroundColor: Colors.green,
+  );
+
+  SnackBar snackBarDeny = const SnackBar(
+    content: Text("Reveja os campos anteriores"),
+    backgroundColor: Colors.red,
+  );
+
+  SnackBar snackBarNotWaited = const SnackBar(
+    content: Text("Erro Inesperado, refaça o processo"),
+    backgroundColor: Colors.red,
+  );
+
 }
+
+
+
+
+
+
+
+
+
+
+
 
 class AlwaysDisabledFocusNode extends FocusNode {
   @override

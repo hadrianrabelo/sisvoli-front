@@ -22,19 +22,21 @@ class _RegisterPageState extends State<RegisterPage> {
   String sex = "";
   String _comparePassword = "";
   String _password = "";
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController mailController = TextEditingController();
-  final TextEditingController cpfController = TextEditingController();
-  final TextEditingController passController = TextEditingController();
-  final TextEditingController genderController = TextEditingController();
-  final TextEditingController birthdateController = TextEditingController();
-  final TextEditingController usernameController = TextEditingController();
+  late String _date;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _mailController = TextEditingController();
+  final TextEditingController _cpfController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {FocusScope.of(context).unfocus();},
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
       child: Scaffold(
         body: BackGround(
           background: Form(
@@ -46,10 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.015,
+                      height: MediaQuery.of(context).size.height * 0.015,
                     ),
                     const Text.rich(
                       TextSpan(
@@ -61,10 +60,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.01),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,16 +77,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                         SizedBox(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.03,
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
+                          height: MediaQuery.of(context).size.height * 0.03,
+                          width: MediaQuery.of(context).size.width,
                         ),
                         TextFormField(
+                          controller: _nameController,
                           validator: (value) {
                             return RegisterPageModel().validName(value);
                           },
@@ -115,6 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                         TextFormField(
+                          controller: _usernameController,
                           validator: (value) {
                             return RegisterPageModel().validUser(value);
                           },
@@ -141,10 +133,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         TextFormField(
                           enableInteractiveSelection: false,
                           focusNode: AlwaysDisabledFocusNode(),
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(10),
-                            DataInputFormatter(),
-                          ],
                           validator: (value) {
                             return RegisterPageModel().validDate(value);
                           },
@@ -182,6 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               setState(() {
                                 _dateController.text =
                                     DateFormat('dd/MM/yyyy').format(pickeddate);
+                                _date = DateFormat('yyyy-MM-dd').format(pickeddate);
                               });
                             }
                           },
@@ -190,6 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                         TextFormField(
+                          controller: _mailController,
                           validator: (String? value) {
                             return (RegisterPageModel().validMailReturn(value));
                           },
@@ -214,6 +204,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                         TextFormField(
+                          controller: _cpfController,
                           validator: (value) {
                             if (CPFValidator.isValid(value)) {
                               null;
@@ -344,16 +335,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             height: 30.0,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.110,
+                            width: MediaQuery.of(context).size.width * 0.110,
                             child: Transform.scale(
                               scale: 1.2,
                               child: Radio(
                                 fillColor: MaterialStateColor.resolveWith(
-                                        (states) => Colors.blue),
-                                value: 'feminino',
+                                    (states) => Colors.blue),
+                                value: 'FEMALE',
                                 groupValue: sex,
                                 onChanged: (String? value) {
                                   setState(() {
@@ -377,16 +365,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           SizedBox(
                             height: 30.0,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.110,
+                            width: MediaQuery.of(context).size.width * 0.110,
                             child: Transform.scale(
                               scale: 1.2,
                               child: Radio(
                                 fillColor: MaterialStateColor.resolveWith(
-                                        (states) => Colors.blue),
-                                value: 'masculino',
+                                    (states) => Colors.blue),
+                                value: 'MALE',
                                 groupValue: sex,
                                 onChanged: (String? value) {
                                   setState(() {
@@ -413,23 +398,38 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SizedBox(
                       height: 48,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.87,
+                      width: MediaQuery.of(context).size.width * 0.87,
                       child: ElevatedButton(
                         onPressed: () {
                           var formValid =
                               _formKey.currentState?.validate() ?? false;
                           if (RegisterPageModel().selectedIcon(sex)) {
                             ScaffoldMessenger.of(context)
-                                .showSnackBar(RegisterPageModel().snackBar);
+                                .showSnackBar(RegisterPageModel().snackBarGender);
                           } else if (formValid) {
-                            print("tudo certo");
+                            userRegister(
+                                _nameController.text,
+                                sex,
+                                _mailController.text,
+                                _password,
+                                _cpfController.text,
+                                _date,
+                                _usernameController.text);
+                            if(UserRegister().statusCode == 200) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(RegisterPageModel().snackBarSucess);
+                            } else if (UserRegister().statusCode == 500) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(RegisterPageModel().snackBarDeny);
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(RegisterPageModel().snackBarNotWaited);
+                            }
                           }
                         },
                         style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(customColors.getConfirmButton),
+                          backgroundColor: MaterialStatePropertyAll(
+                              customColors.getConfirmButton),
                         ),
                         child: const Text(
                           style: TextStyle(
@@ -441,29 +441,26 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                      child: Text.rich(
-                        TextSpan(
-                          text: 'Já possui uma conta? ',
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Já possui uma conta?",
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontFamily: 'Inter',
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'Faça Login',
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ],
+                              color: Color.fromRGBO(255, 255, 255, 0.6)),
                         ),
-                      ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "Faça Login",
+                            style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: Color.fromRGBO(255, 255, 255, 0.6)),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
