@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:urnavotos/sisvoli-modules/creating_module.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:urnavotos/values/custom_colors.dart';
 import 'package:intl/intl.dart';
@@ -18,7 +19,10 @@ class _RegisterPageState extends State<CreatingPage> {
   int numberChoice = 1;
   DateTime dateTime = DateTime(2022, 02, 02, 12, 00);
   DateTime dateTimeSecond = DateTime(2022, 02, 02, 12, 00);
+  DateTime compareDate = DateTime(2022, 02, 02, 12, 00);
   List listChooses = [null];
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +86,7 @@ class _RegisterPageState extends State<CreatingPage> {
                             height: 9,
                           ),
                           TextFormField(
+                            controller: _titleController,
                             validator: (String? value) {
                               if (CreatingPageModel().validAndLength(value) ==
                                   '1') {
@@ -121,6 +126,7 @@ class _RegisterPageState extends State<CreatingPage> {
                             height: 9,
                           ),
                           TextFormField(
+                            controller: _descriptionController,
                             validator: (String? value) {
                               if (CreatingPageModel().validAndLength(value) ==
                                   '1') {
@@ -232,7 +238,7 @@ class _RegisterPageState extends State<CreatingPage> {
                                     listChooses.removeLast();
                                     numberChoice--;
                                     setState(
-                                          () {},
+                                      () {},
                                     );
                                   }
                                 },
@@ -265,7 +271,8 @@ class _RegisterPageState extends State<CreatingPage> {
                                     );
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        CreatingPageModel().snackBarText("Preencha as opções vazias"));
+                                        CreatingPageModel().snackBarText(
+                                            "Preencha as opções vazias"));
                                   }
                                 },
                                 child: const Text(
@@ -478,14 +485,29 @@ class _RegisterPageState extends State<CreatingPage> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
+                      var chooseValid =
+                          _chooseKey.currentState?.validate() ?? false;
                       var formValid =
                           _formKey.currentState?.validate() ?? false;
-                      if (formValid) {
-                        _formKey.currentState?.save();
-                        print('certo');
-                      }
-                      print(listChooses.length);
-                      print(listChooses);
+
+                      if (dateTime == compareDate ||
+                              dateTimeSecond == compareDate)
+                           {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            CreatingPageModel().snackBarText(
+                                "Selecione as datas e horas corretamente"));
+                      } else if (dateTime.compareTo(DateTime.now()) < 0 ||
+                          dateTimeSecond.compareTo(DateTime.now()) < 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            CreatingPageModel().snackBarText(
+                                "A data e hora selecionada é invalida"));
+                      }else if (formValid & chooseValid) {
+                        createPoll(_titleController, _descriptionController,
+                            dateTime, dateTimeSecond);
+                      } else {ScaffoldMessenger.of(context).showSnackBar(
+                          CreatingPageModel().snackBarText(
+                              "Selecione as opções corretamente"));}
+
                     },
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(

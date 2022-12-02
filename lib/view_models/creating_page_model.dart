@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 
 class CreatingPageModel {
 
-  SnackBar snackBar = const SnackBar(
-    content: Text("Preencha as opções vazias"),
-    backgroundColor: Colors.red,
-  );
-
   SnackBar snackBarText (String text) {
     return SnackBar(
       content: Text(text),
@@ -35,7 +30,6 @@ class CreatingPageModel {
     }
     return null;
   }
-
 
 
 
