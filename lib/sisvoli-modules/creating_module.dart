@@ -15,20 +15,22 @@ Future createPoll(title, description, startDate, endDate) async {
     "title": "$title",
     "description": "$description",
     "startDate": "$startDate",
-    "endDate": "$endDate",
+    "endDate": "$endDate"
   };
 
   var url = Uri.parse("$_listApi/poll/new");
   var token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDAwMTcwMn0.gTUk05ZHH_rGaJFGuDvvzR7xrYSvci9DAUdrIG1AgCA';
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDAyMTA5MX0.9vqpEBzMxKqWkvPVytkHsQGBGO5OeVlEKuwcf5Q2A-k';
   var response = await http.post(
     url,
     headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.authorizationHeader: "Bearer $token",
+      HttpHeaders.authorizationHeader: 'Bearer $token',
     },
     body: jsonEncode(body),
   );
+  print(response.body);
+  print(response.statusCode);
   if(response.statusCode == 200) {
     CreatingPoll().statusCode = response.statusCode;
   } else if (response.statusCode != 200) {

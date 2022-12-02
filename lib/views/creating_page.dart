@@ -504,9 +504,14 @@ class _RegisterPageState extends State<CreatingPage> {
                       }else if (formValid & chooseValid) {
                         createPoll(_titleController, _descriptionController,
                             dateTime, dateTimeSecond);
+                        if (CreatingPoll().statusCode != 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              CreatingPageModel().snackBarText(
+                                  "Refaça o processo"));
+                        }
                       } else {ScaffoldMessenger.of(context).showSnackBar(
                           CreatingPageModel().snackBarText(
-                              "Selecione as opções corretamente"));}
+                              "Preencha as opções corretamente"));}
 
                     },
                     style: const ButtonStyle(
