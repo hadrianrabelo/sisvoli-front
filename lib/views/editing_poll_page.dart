@@ -3,16 +3,16 @@ import 'package:urnavotos/sisvoli-modules/creating_module.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:urnavotos/values/custom_colors.dart';
 import 'package:intl/intl.dart';
-import 'package:urnavotos/view_models/creating_page_model.dart';
+import 'package:urnavotos/view_models/editing_poll_page_model.dart';
 
-class CreatingPage extends StatefulWidget {
-  const CreatingPage({Key? key}) : super(key: key);
+class EditingPollPage extends StatefulWidget {
+  const EditingPollPage({Key? key}) : super(key: key);
 
   @override
-  State<CreatingPage> createState() => _RegisterPageState();
+  State<EditingPollPage> createState() => _EditingPollPageState();
 }
 
-class _RegisterPageState extends State<CreatingPage> {
+class _EditingPollPageState extends State<EditingPollPage> {
   final _formKey = GlobalKey<FormState>();
   final _chooseKey = GlobalKey<FormState>();
   int numberTotal = 1;
@@ -21,7 +21,7 @@ class _RegisterPageState extends State<CreatingPage> {
   DateTime dateTimeSecond = DateTime(2022, 02, 02, 12, 00);
   DateTime compareDate = DateTime(2022, 02, 02, 12, 00);
   List listChooses = [null];
-  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController(text: "banana");
   final TextEditingController _descriptionController = TextEditingController();
 
   @override
@@ -32,6 +32,13 @@ class _RegisterPageState extends State<CreatingPage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: (){
+              //Navigator.pop(context);
+              getPoll();
+            },
+            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
+          ),
           backgroundColor: Colors.black,
           title: const Text(
             '  Criando a enquete',
@@ -41,16 +48,6 @@ class _RegisterPageState extends State<CreatingPage> {
               fontFamily: 'Inter',
             ),
           ),
-          actions: const [
-            Icon(
-              Icons.menu,
-              size: 38,
-              color: Colors.white,
-            ),
-            SizedBox(
-              width: 30,
-            )
-          ],
         ),
         body: BackGround(
           background: Form(
@@ -60,6 +57,7 @@ class _RegisterPageState extends State<CreatingPage> {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       padding: const EdgeInsets.all(15.0),
@@ -75,7 +73,7 @@ class _RegisterPageState extends State<CreatingPage> {
                             height: 9,
                           ),
                           const Text(
-                            " Digite o titulo da enquete:",
+                            " O título da enquete é:",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -87,26 +85,17 @@ class _RegisterPageState extends State<CreatingPage> {
                           ),
                           TextFormField(
                             controller: _titleController,
-                            validator: (String? value) {
-                              if (CreatingPageModel().validAndLength(value) ==
-                                  '1') {
-                                return "Titulo Obrigatório";
-                              } else if (CreatingPageModel()
-                                      .validAndLength(value) ==
-                                  '2') {
-                                return "No mínimo 8 caracteres";
-                              }
-                              return null;
-                            },
+                            enableInteractiveSelection: false,
+                            focusNode: AlwaysDisabledFocusNode(),
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: Colors.grey,
                             ),
                             decoration: const InputDecoration(
                               fillColor: Color.fromRGBO(255, 255, 255, 0.07),
                               filled: true,
                               border: OutlineInputBorder(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0)),
+                                BorderRadius.all(Radius.circular(8.0)),
                               ),
                               disabledBorder: OutlineInputBorder(),
                             ),
@@ -128,11 +117,11 @@ class _RegisterPageState extends State<CreatingPage> {
                           TextFormField(
                             controller: _descriptionController,
                             validator: (String? value) {
-                              if (CreatingPageModel().validAndLength(value) ==
+                              if (EditingPollPageModel().validAndLength(value) ==
                                   '1') {
                                 return "Descrição Obrigatória";
-                              } else if (CreatingPageModel()
-                                      .validAndLength(value) ==
+                              } else if (EditingPollPageModel()
+                                  .validAndLength(value) ==
                                   '2') {
                                 return "No mínimo 8 caracteres";
                               }
@@ -147,12 +136,12 @@ class _RegisterPageState extends State<CreatingPage> {
                               contentPadding: EdgeInsets.all(20),
                               border: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                color: Colors.white60,
-                              )),
+                                    color: Colors.white60,
+                                  )),
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                style: BorderStyle.none,
-                              )),
+                                    style: BorderStyle.none,
+                                  )),
                             ),
                             maxLines: 5,
                             minLines: 5,
@@ -179,13 +168,13 @@ class _RegisterPageState extends State<CreatingPage> {
                                   direction: Axis.vertical,
                                   children: List.generate(
                                     numberChoice + 1,
-                                    (index) => SizedBox(
+                                        (index) => SizedBox(
                                       height: 68,
                                       width: MediaQuery.of(context).size.width *
                                           0.840,
                                       child: TextFormField(
                                         validator: (String? value) {
-                                          if (CreatingPageModel()
+                                          if (EditingPollPageModel()
                                               .chooseValid(value)) {
                                             return "preenchimento obrigatório";
                                           }
@@ -213,7 +202,7 @@ class _RegisterPageState extends State<CreatingPage> {
                                                 Radius.circular(8.0)),
                                           ),
                                           disabledBorder:
-                                              const OutlineInputBorder(),
+                                          const OutlineInputBorder(),
                                           fillColor: const Color.fromRGBO(
                                               255, 255, 255, 0.07),
                                           filled: true,
@@ -232,13 +221,13 @@ class _RegisterPageState extends State<CreatingPage> {
                                 onPressed: () {
                                   if (1 >= numberChoice) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        CreatingPageModel().snackBarText(
+                                        EditingPollPageModel().snackBarText(
                                             "Mínimo de duas opções"));
                                   } else {
                                     listChooses.removeLast();
                                     numberChoice--;
                                     setState(
-                                      () {},
+                                          () {},
                                     );
                                   }
                                 },
@@ -267,11 +256,11 @@ class _RegisterPageState extends State<CreatingPage> {
                                   if (chooseValid) {
                                     numberChoice++;
                                     setState(
-                                      () {},
+                                          () {},
                                     );
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        CreatingPageModel().snackBarText(
+                                        EditingPollPageModel().snackBarText(
                                             "Preencha as opções vazias"));
                                   }
                                 },
@@ -491,26 +480,26 @@ class _RegisterPageState extends State<CreatingPage> {
                           _formKey.currentState?.validate() ?? false;
 
                       if (dateTime == compareDate ||
-                              dateTimeSecond == compareDate)
-                           {
+                          dateTimeSecond == compareDate)
+                      {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            CreatingPageModel().snackBarText(
+                            EditingPollPageModel().snackBarText(
                                 "Selecione as datas e horas corretamente"));
                       } else if (dateTime.compareTo(DateTime.now()) < 0 ||
                           dateTimeSecond.compareTo(DateTime.now()) < 0) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            CreatingPageModel().snackBarText(
+                            EditingPollPageModel().snackBarText(
                                 "A data e hora selecionada é invalida"));
                       }else if (formValid & chooseValid) {
                         createPoll(_titleController, _descriptionController,
                             dateTime, dateTimeSecond);
                         if (CreatingPoll().statusCode != 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              CreatingPageModel().snackBarText(
+                              EditingPollPageModel().snackBarText(
                                   "Refaça o processo"));
                         }
                       } else {ScaffoldMessenger.of(context).showSnackBar(
-                          CreatingPageModel().snackBarText(
+                          EditingPollPageModel().snackBarText(
                               "Preencha as opções corretamente"));}
 
                     },
@@ -519,7 +508,7 @@ class _RegisterPageState extends State<CreatingPage> {
                           Color.fromRGBO(38, 110, 215, 1.0)),
                     ),
                     child: const Text(
-                      "Criar",
+                      "Confirmar alterações",
                       style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'Roboto',
@@ -536,20 +525,20 @@ class _RegisterPageState extends State<CreatingPage> {
   }
 
   Future<DateTime?> pickDate() => showDatePicker(
-        context: context,
-        initialDate: dateTime,
-        firstDate: DateTime(2022),
-        lastDate: DateTime(2100),
-      );
+    context: context,
+    initialDate: dateTime,
+    firstDate: DateTime(2022),
+    lastDate: DateTime(2100),
+  );
 
   Future<TimeOfDay?> pickTime() => showTimePicker(
-        context: context,
-        builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child ?? Container(),
-          );
-        },
-        initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+    context: context,
+    builder: (context, child) {
+      return MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child ?? Container(),
       );
+    },
+    initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+  );
 }

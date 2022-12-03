@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CreatingPageModel {
+class EditingPollPageModel {
 
   SnackBar snackBarText (String text) {
     return SnackBar(
@@ -31,13 +31,9 @@ class CreatingPageModel {
     return null;
   }
 
+}
 
-
-
-
-
-
-
-
-
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
 }

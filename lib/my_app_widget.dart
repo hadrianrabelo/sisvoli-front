@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:urnavotos/views/creating_page.dart';
+import 'package:urnavotos/views/editing_poll_page.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
         title: 'Sisvoli',
         debugShowCheckedModeBanner: false,
-        home: CreatingPage(),
+        home: EditingPollPage(),
     );
   }
 }
