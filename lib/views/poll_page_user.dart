@@ -17,6 +17,8 @@ class _PullPageUserState extends State<PollPageUser> {
   final PollController _controller = PollController();
   late int length = _controller.poll.value.optionList?.length ?? 2;
   bool tela = false;
+  bool wasSelected = false;
+  int selectedAnswer = -1;
 
   @override
   void initState() {
@@ -103,7 +105,7 @@ class _PullPageUserState extends State<PollPageUser> {
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 40,
+                                    height: 30,
                                   ),
                                   const Text(
                                     " Descrição da enquete:",
@@ -117,12 +119,13 @@ class _PullPageUserState extends State<PollPageUser> {
                                     height: 15,
                                   ),
                                   TextFormField(
+                                    enableInteractiveSelection: false,
+                                    focusNode: AlwaysDisabledFocusNode(),
                                     initialValue:
                                         _controller.description ?? "null",
                                     style: const TextStyle(
                                       color: Color.fromRGBO(141, 141, 141, 100),
                                       fontSize: 17,
-
                                     ),
                                     decoration: const InputDecoration(
                                       fillColor:
@@ -153,7 +156,7 @@ class _PullPageUserState extends State<PollPageUser> {
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 9,
+                                    height: 10,
                                   ),
                                   Column(
                                     children: [
@@ -167,8 +170,43 @@ class _PullPageUserState extends State<PollPageUser> {
                                                   (BuildContext context,
                                                       int index) {
                                                 return Column(children: [
-                                                  ElevatedButton(onPressed: () {}, child: Text($)),
-
+                                                  SizedBox(
+                                                    width: 345,
+                                                    height: 53,
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              AlertDialog(
+                                                            title: const Text(
+                                                                "Deseja confirmar a opção: "),
+                                                                content: ElevatedButton(onPressed: () {
+                                                                  selectedAnswer = index;
+                                                                }, child: const Text("Confirmar")),
+                                                          ),
+                                                        );
+                                                      },
+                                                      style: const ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStatePropertyAll(
+                                                                Color.fromRGBO(
+                                                                    112,
+                                                                    112,
+                                                                    112,
+                                                                    100)),
+                                                        fixedSize:
+                                                            MaterialStatePropertyAll(
+                                                                Size.square(double
+                                                                    .infinity)),
+                                                      ),
+                                                      child:
+                                                          const Text("BANANA"),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 9,
+                                                  ),
 
                                                   /*
                                                   TextFormField(
@@ -207,7 +245,8 @@ class _PullPageUserState extends State<PollPageUser> {
                                                   const SizedBox(
                                                     height: 12,
                                                   ),
-                                                */]);
+                                                */
+                                                ]);
                                               })),
                                     ],
                                   ),
@@ -227,38 +266,6 @@ class _PullPageUserState extends State<PollPageUser> {
                         ),
                       ),
                     ),
-            ),
-          ),
-          bottomNavigationBar: BottomAppBar(
-            color: const Color.fromARGB(255, 1, 1, 1),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 48,
-                    width: MediaQuery.of(context).size.width * 0.87,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromRGBO(38, 110, 215, 1.0)),
-                      ),
-                      child: const Text(
-                        "Confirmar",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Roboto',
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ),
