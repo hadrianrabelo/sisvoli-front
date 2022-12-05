@@ -2,13 +2,12 @@ class OptionsModel {
   String? id;
   String? name;
   String? pollId;
-
   OptionsModel({this.id, this.name, this.pollId});
 
   OptionsModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    pollId = json['pollId'];
+    id = json['id'] as String;
+    name = json['name'] as String;
+    pollId = json['pollId'] as String;
   }
 
   Map<String, dynamic> toJson() {

@@ -27,17 +27,17 @@ class PollModel {
         this.optionList});
 
   PollModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    description = json['description'];
-    type = json['type'];
-    creationDate = json['creationDate'];
-    updateDate = json['updateDate'];
-    startDate = json['startDate'];
-    endDate = json['endDate'];
-    status = json['status'];
-    userOwnerId = json['userOwnerId'];
-    optionList = json['optionList'].cast<String>();
+    id = json['id'] as String;
+    title = json['title'] as String;
+    description = json['description'] as String;
+    type = json['type'] as String;
+    creationDate = json['creationDate'] as String;
+    updateDate = json['updateDate'] as String;
+    startDate = json['startDate'] as String;
+    endDate = json['endDate'] as String;
+    status = json['status'] as String;
+    userOwnerId = json['userOwnerId'] as String;
+    optionList = (json['optionList'] as Iterable<dynamic>).map((e) => OptionsModel.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {

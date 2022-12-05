@@ -8,6 +8,13 @@ class EditingPollPageModel {
       backgroundColor: Colors.red,);
   }
 
+  SnackBar snackBarSucess (String text) {
+    return SnackBar(
+      content: Text(text),
+      backgroundColor: Colors.green,);
+  }
+
+
   bool selectedIcon(value) {
     if (value == null || value.isEmpty) {
       return true;
@@ -37,3 +44,4 @@ class AlwaysDisabledFocusNode extends FocusNode {
   @override
   bool get hasFocus => false;
 }
+
