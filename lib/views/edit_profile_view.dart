@@ -29,12 +29,13 @@ class _EditProfileViewState extends State<EditProfileView> {
   final Map<String, dynamic> _userData = {};
   late String sexo = _userData['gender'];
   //SnackBar snackBar = RegisterPageModel().snackBar;
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController mailController = TextEditingController();
+  late final nameController = TextEditingController(text: _userData['name']);
+  late final TextEditingController mailController = TextEditingController(text: _userData['email']);
   final TextEditingController passController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
-  final TextEditingController birthdateController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
+  late DateTime birthDate = _userData['birthDate'];
+  late String date = DateFormat("dd-MM-yyyy").format(birthDate);
+  late final TextEditingController _dateController = TextEditingController(text: _userData['birthDate']);
 
   @override
   void initState() {
@@ -90,8 +91,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                     ),
 
                     TextFormField(
-                      initialValue: _userData['name'],
                       controller: nameController,
+                      //initialValue: _userData['name'],
                       validator: (value) {
                         //return RegisterPageModel().validName(value);
                       },
@@ -131,7 +132,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white60)),
                         prefixIcon: Icon(
-                          Icons.calendar_month_outlined,
+                          Icons.calendar_today_rounded,
                           color: Colors.white,
                         ),
                         hintText: "Data de Nascimento",
@@ -153,8 +154,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                             lastDate: DateTime.now());
                         if (pickeddate != null) {
                           setState(() {
+                            birthDate = pickeddate;
                             _dateController.text =
-                                DateFormat('dd/MM/yyyy').format(pickeddate);
+                                DateFormat('dd-MM-yyyy').format(pickeddate);
                           });
                         }
                       },
@@ -163,7 +165,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                       height: 20,
                     ),
                     TextFormField(
-                      initialValue: _userData['email'],
+                      controller: mailController,
+                      //initialValue: _userData['email'],
                       validator: (String? value) {
                        // return (RegisterPageModel().validMailReturn(value));
                       },
@@ -265,7 +268,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ],
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
+                  height: MediaQuery.of(context).size.height * 0.08,
                 ),
                 /*Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -353,21 +356,22 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                     ]),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.06,
+                  height: MediaQuery.of(context).size.height * 0.08,
                 ),
                 SizedBox(
                   height: 48,
                   width: MediaQuery.of(context).size.width * 0.87,
                   child: ElevatedButton(
                     onPressed: () {
+                      //String dateBirth = DateFormat("yyyy-MM-dd").format(birthDate);
                       editUser(
                           name: nameController.text,
                           gender: sexo,
                           email: mailController.text,
-                          password: passController.text,
+                          password: _comparePassword,
                           birthDate: _dateController.text
                       );
-                      print(_userData);
+                      print("data: ${_dateController.text}");
                       /*var formValid =
                           _formKey.currentState?.validate() ?? false;
                       if (RegisterPageModel().selectedIcon(sexo)) {
@@ -399,8 +403,8 @@ class _EditProfileViewState extends State<EditProfileView> {
     ),
   );
   Future<void> getUser() async{
-    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjY5NzQwMTA0fQ.0Az7LtcX--h0A1-4IEvmZSfN5yJvcOWfAF7fkjazM0w';
     var url = Uri.parse("http://10.0.0.136:8080/user/user-data");
+    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjUwMzM2fQ.g1muIvH24lBYUHkdDOgY9MOUSbAHi_Bt20qh_gkgL4s';
     var response = await http.get(url,
         headers:
         {
@@ -424,14 +428,41 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
   }
   Future editUser({name,gender,email,password,birthDate}) async{
-    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjY5NzQwMTA0fQ.0Az7LtcX--h0A1-4IEvmZSfN5yJvcOWfAF7fkjazM0w';
-   List lista = [name, gender,email,password,birthDate];
-    var bodyContent = {name,gender,email,password,birthDate};
-    bodyContent.forEach((x) {
-      if(x =="")
-        x = null;
-        print(x);
-    });
+    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjUwMzM2fQ.g1muIvH24lBYUHkdDOgY9MOUSbAHi_Bt20qh_gkgL4s';
+    Map<String, String> bodyContent = {
+      "name": name,
+      "gender": gender,
+      "email":email,
+      "password": password,
+      "birthDate": '$birthDate'
+    };
+    if(bodyContent["name"]!.isEmpty){
+      print("name: ${bodyContent["name"]}");
+      bodyContent.remove("name");
+    }
+    if(bodyContent["gender"]!.isEmpty){
+      print("gender: ${bodyContent["gender"]}");
+      bodyContent.remove("gender");
+    }
+    if(bodyContent["email"]!.isEmpty){
+      print("email: ${bodyContent["email"]}");
+      bodyContent.remove("email");
+    }
+    if(bodyContent["password"]!.isEmpty){
+      print("Senha: ${bodyContent["password"]}");
+      bodyContent.remove("password");
+    }
+    if(bodyContent["birthDate"]!.isEmpty){
+      print("birthDate: ${bodyContent["birthDate"]}");
+      bodyContent.remove("birthDate");
+    }
+    /*bodyContent.forEach((key, value) =>{
+      if(value.isEmpty){
+        print("$key:$value"),
+        bodyContent.remove(key),
+      }
+    });*/
+    print(jsonEncode(bodyContent));
     var url = Uri.parse("http://10.0.0.136:8080/user/update");
     var response = await http.put(
       url,
@@ -441,6 +472,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       },
       body: jsonEncode(bodyContent),
     );
+    print(jsonEncode(bodyContent));
     print(response.statusCode);
   }
 }
