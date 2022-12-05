@@ -15,6 +15,7 @@ class _BackGroundState extends State<BackGround> {
     return Stack(
       children:<Widget>[
         Container(
+          alignment: Alignment.topLeft,
           decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerRight ,
