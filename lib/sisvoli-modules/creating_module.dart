@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import '../models/poll_model.dart';
+import '../models/poll_result_model.dart';
 
 String _listApi = dotenv.get("API_HOST", fallback: "");
 
@@ -17,7 +18,7 @@ class PollController {
   List<dynamic> list = [];
   String? description;
   late final _token =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDI4NTM2OX0.4q8VLZEFMSqLtFmjPaaMgBxBqsZpjt6_FFAkghgDGTM";
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDI4NjAxMn0.E9M-znKwcJ6VYMLq9mD4wGQH1iS-Xo3IEyXaV8qAi9w";
   String? returnMessage;
 
   getPollSec() async {
@@ -174,6 +175,30 @@ class VoteController {
     } else {
       returnMessage = "sem alterações";
       //TODO CONTINUAR SEM MANDAR CURL, TUDO IGUAL, SEM NECESSIDADE
+    }
+  }
+}
+
+class PollResultController {
+
+  late final _token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDI4NzE1MX0.YuXcjkLwcyUBDlZJgTG8mH00Mu9lQWSILAq0HGlPQu0";
+  bool isValid = true;
+  late PollResultModel pollResult;
+
+  getPollSec() async {
+    var url =
+    Uri.parse("$_listApi/poll/indicators/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
+    var response = await http.get(url, headers: {
+      HttpHeaders.authorizationHeader: 'Bearer $_token',
+    });
+
+    if (response.statusCode == 200) {
+      pollResult = (PollResultModel.fromJson(jsonDecode(response.body)));
+      isValid = false;
+
+      }
+    if (response.statusCode != 200) {
+
     }
   }
 }

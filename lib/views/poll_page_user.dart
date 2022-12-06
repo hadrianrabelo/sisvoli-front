@@ -39,7 +39,7 @@ class _PullPageUserState extends State<PollPageUser> {
             ),
             backgroundColor: Colors.black,
             title: const Text(
-              '  Informações da enquete',
+              'Relatório',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
@@ -72,149 +72,126 @@ class _PullPageUserState extends State<PollPageUser> {
                     )
                   : Padding(
                       padding: const EdgeInsets.all(18.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(15.0),
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0)),
-                                color: Color.fromRGBO(255, 255, 255, 0.07),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 9,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(15.0),
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                              color: Color.fromRGBO(255, 255, 255, 0.07),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 9,
+                                ),
+                                const Text(
+                                  ' Quantidade de votos:',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w900,
                                   ),
-                                  const Text(
-                                    ' Nome da Enquete',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w900,
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                const Text(
+                                  " Total: ",
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(38, 110, 215, 100),
+                                    fontSize: 17,
+                                    fontFamily: "Inter",
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                TextFormField(
+                                  enableInteractiveSelection: false,
+                                  focusNode: AlwaysDisabledFocusNode(),
+                                  initialValue:
+                                      _controller.description ?? "null",
+                                  style: const TextStyle(
+                                    color: Color.fromRGBO(141, 141, 141, 100),
+                                    fontSize: 17,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    fillColor:
+                                        Color.fromRGBO(255, 255, 255, 0.07),
+                                    filled: true,
+                                    contentPadding: EdgeInsets.all(20),
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                      color: Colors.white70,
+                                    )),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                      style: BorderStyle.none,
+                                    )),
+                                  ),
+                                  maxLines: 6,
+                                  minLines: 6,
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Text(
+                                      "OPÇÃO VENCEDORA",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontFamily: "Inter",
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  const Text(
-                                    " Descrição da enquete:",
-                                    style: TextStyle(
-                                      color: Colors.white60,
-                                      fontSize: 15,
-                                      fontFamily: "Inter",
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Column(children: [
                                   TextFormField(
                                     enableInteractiveSelection: false,
                                     focusNode: AlwaysDisabledFocusNode(),
-                                    initialValue:
-                                        _controller.description ?? "null",
+                                    initialValue: "",
                                     style: const TextStyle(
                                       color: Color.fromRGBO(141, 141, 141, 100),
                                       fontSize: 17,
                                     ),
                                     decoration: const InputDecoration(
-                                      fillColor:
-                                          Color.fromRGBO(255, 255, 255, 0.07),
-                                      filled: true,
-                                      contentPadding: EdgeInsets.all(20),
                                       border: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                        color: Colors.white70,
-                                      )),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                        style: BorderStyle.none,
-                                      )),
-                                    ),
-                                    maxLines: 6,
-                                    minLines: 6,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  const Text(
-                                    " Opções para escolha:",
-                                    style: TextStyle(
-                                      color: Colors.white60,
-                                      fontSize: 15,
-                                      fontFamily: "Inter",
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8.0)),
+                                      ),
+                                      disabledBorder: OutlineInputBorder(),
+                                      fillColor:
+                                          Color.fromRGBO(100, 29, 139, 30),
+                                      filled: true,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Column(
-                                    children: [
-                                      Form(
-                                          key: _chooseKey,
-                                          child: ListView.builder(
-                                              shrinkWrap: true,
-                                              physics: const ScrollPhysics(),
-                                              itemCount: _controller.poll.value.optionList!.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                  int index) {
-                                                return Column(children: [
-                                                  TextFormField(
-                                                    enableInteractiveSelection: false,
-                                                    focusNode: AlwaysDisabledFocusNode(),
-                                                    initialValue:
-                                                    _controller.poll.value.optionList![index].name,
-                                                    style: const TextStyle(
-                                                      color: Color.fromRGBO(141, 141, 141, 100),
-                                                      fontSize: 17,
-                                                    ),
-                                                    decoration: const InputDecoration(
-                                                      border:
-                                                      OutlineInputBorder(
-                                                        borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                8.0)),
-                                                      ),
-                                                      disabledBorder:
-                                                      OutlineInputBorder(),
-                                                      fillColor:
-                                                      Color.fromRGBO(
-                                                          255,
-                                                          255,
-                                                          255,
-                                                          0.07),
-                                                      filled: true,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 12,
-                                                  ),
-                                                ]);
-                                              })),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 24,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  )
-                                ],
-                              ),
+                                ]),
+                                const SizedBox(
+                                  height: 24,
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                )
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
             ),
@@ -226,21 +203,25 @@ class _PullPageUserState extends State<PollPageUser> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(width: 10,),
                   Container(
                     height: 48,
-                    width: MediaQuery.of(context).size.width * 0.67,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.87,
                     decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     ),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+
+                      },
                       style: const ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(
                             Color.fromRGBO(38, 110, 215, 1.0)),
                       ),
                       child: const Text(
-                        "Relatório",
+                        "Retornar",
                         style: TextStyle(
                             fontSize: 16,
                             fontFamily: 'Roboto',
@@ -248,23 +229,6 @@ class _PullPageUserState extends State<PollPageUser> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10,),
-                  Container(
-                    height: 48,
-                    width: MediaQuery.of(context).size.width * 0.18,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {Navigator.pop;},
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromRGBO(215, 38, 38, 100)),
-                      ),
-                      child: const Icon(Icons.close, size: 35,),
-                    ),
-                  ),
-                  const SizedBox(width: 10,),
                 ],
               ),
             ),
