@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
-class CreatingPageModel {
+class EditingPollPageModel {
 
   SnackBar snackBarText (String text) {
     return SnackBar(
       content: Text(text),
       backgroundColor: Colors.red,);
   }
+
+  SnackBar snackBarSucess (String text) {
+    return SnackBar(
+      content: Text(text),
+      backgroundColor: Colors.green,);
+  }
+
 
   bool selectedIcon(value) {
     if (value == null || value.isEmpty) {
@@ -31,13 +38,10 @@ class CreatingPageModel {
     return null;
   }
 
-
-
-
-
-
-
-
-
-
 }
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
+
