@@ -504,7 +504,7 @@ class _RegisterPageState extends State<CreatingPage> {
                       }else if (formValid & chooseValid) {
                         createPoll(_titleController, _descriptionController,
                             dateTime, dateTimeSecond);
-                        if (CreatingPoll().statusCode != 0) {
+                        if (CreatingPoll().statusCode != 200) {
                           ScaffoldMessenger.of(context).showSnackBar(
                               CreatingPageModel().snackBarText(
                                   "Refaça o processo"));

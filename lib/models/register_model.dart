@@ -1,5 +1,0 @@
-class RegisterModel {
-  var getCpf;
-
-
-}
