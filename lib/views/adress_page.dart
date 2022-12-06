@@ -424,7 +424,12 @@ class _AdressPageState extends State<AdressPage> {
                           });
                         });
                       }else{
-                        //snackbar de erro
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(backgroundColor: Colors.redAccent,
+                              content: Text('Houve um erro, porfavor tente novamente mais tarde!'),
+                              behavior: SnackBarBehavior.floating,
+                            )
+                        );
                       }
                     },
                     style: const ButtonStyle(
