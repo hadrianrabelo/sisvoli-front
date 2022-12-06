@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+//import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class CreatingPoll {
@@ -8,7 +8,7 @@ class CreatingPoll {
 }
 
 
-String _listApi = dotenv.get("API_HOST", fallback: "");
+//String _listApi = dotenv.get("API_HOST", fallback: "");
 
 Future createPoll(title, description, startDate, endDate) async {
   Map<String, String> body = {
@@ -18,7 +18,7 @@ Future createPoll(title, description, startDate, endDate) async {
     "endDate": "$endDate"
   };
 
-  var url = Uri.parse("$_listApi/poll/new");
+  var url = Uri.parse("http://10.0.0.136:8080/poll/new");
   var token =
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDAyMTA5MX0.9vqpEBzMxKqWkvPVytkHsQGBGO5OeVlEKuwcf5Q2A-k';
   var response = await http.post(

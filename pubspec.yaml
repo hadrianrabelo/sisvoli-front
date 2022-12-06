@@ -19,6 +19,7 @@ dependencies:
   brasil_fields: ^1.6.0
   http: ^0.13.5
   flutter_dotenv: ^5.0.2
+  snippet_coder_utils: ^1.0.12
 
 dev_dependencies:
   flutter_test:
@@ -38,6 +39,6 @@ flutter:
       fonts:
         - asset: assets/fonts/Inter.ttf
 
-  assets:
-    - .env
+  #assets:
+    #- .env
 
