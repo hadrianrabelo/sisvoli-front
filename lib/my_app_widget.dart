@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '/views/new_pass_view.dart';
 import '/views/recover_code_view.dart';
 import '/views/recover_pass_view.dart';
-//import '/views/survey_view.dart';
+import '/views/survey_view.dart';
 import '/views/login_view.dart';
 import '/views/register_page.dart';
 
@@ -18,12 +18,15 @@ class MyApp extends StatelessWidget {
       //home: NewPassView(),
      initialRoute: '/login',
       routes: {
+
         '/login':(context) => const LoginView(),
-        //'/survey':(context) => const SurveyView(),
-        '/recover_pass':(context) => const RecoverPassView(),
-        '/recover_code':(context) => const RecoverCodeView(),
-        '/new_pass':(context) => const NewPassView(),
+        '/survey':(context) => const SurveyView(),
+        '/poll':(context) => const PollView(),
+        //'/recover_pass':(context) => const RecoverPassView(),
+        //'/recover_code':(context) => const RecoverCodeView(),
+        //'/new_pass':(context) => const NewPassView(),
         //'/register':(context) => RegisterView(),
+        '/bottom_bar':(context) => const BottomBarView(),
 
       },
     );
