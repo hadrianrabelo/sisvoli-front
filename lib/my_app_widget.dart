@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:urnavotos/views/edit_profile_view.dart';
 import '/views/new_pass_view.dart';
 import '/views/recover_code_view.dart';
 import '/views/recover_pass_view.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         //'/new_pass':(context) => const NewPassView(),
         //'/register':(context) => RegisterView(),
         '/bottom_bar':(context) => const BottomBarView(),
+        '/edit_profile':(context) => const EditProfileView(),
 
       },
     );
