@@ -4,6 +4,7 @@ import '/views/recover_code_view.dart';
 import '/views/recover_pass_view.dart';
 //import '/views/survey_view.dart';
 import '/views/login_view.dart';
+import '/views/register_page.dart';
 
 
 class MyApp extends StatelessWidget {
