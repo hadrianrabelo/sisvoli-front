@@ -9,12 +9,13 @@ class BackGround extends StatefulWidget {
 }
 
 class _BackGroundState extends State<BackGround> {
-  
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children:<Widget>[
         Container(
+          alignment: Alignment.topLeft,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
@@ -27,6 +28,7 @@ class _BackGroundState extends State<BackGround> {
                   Color.fromARGB(255, 1, 1, 1)],
               )
           ),
+          //color: const Color.fromRGBO(0, 0, 0, 0.95),
           child: widget.background,
         ),
       ],
