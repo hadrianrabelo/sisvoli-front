@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:urnavotos/models/user_model.dart';
 import '../repositories/new_pass_repository.dart';
+import '../repositories/recover_pass_repository.dart';
 import '../values/background.dart';
 import '../values/custom_colors.dart';
+import '../view-models/recover_code_view_model.dart';
 
 class NewPassView extends StatefulWidget {
   const NewPassView({Key? key}) : super(key: key);
@@ -12,10 +18,12 @@ class NewPassView extends StatefulWidget {
 }
 
 class _NewPassViewState extends State<NewPassView> {
+  bool _isHiddenPassFirst = true;
+  bool _isHiddenPassSecond = true;
   final _formKey = GlobalKey<FormState>();
   CustomColors customColors = CustomColors();
-  final _newSenha = TextEditingController();
-  final _conSenha = TextEditingController();
+  final TextEditingController _newPassController = TextEditingController();
+  final TextEditingController _conPassController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +75,7 @@ class _NewPassViewState extends State<NewPassView> {
                       height: MediaQuery.of(context).size.height * 0.2,
                     ),
                     TextFormField(
-                      controller: _newSenha,
+                      controller: _newPassController,
                       validator: (senha) {
                         if (senha!.isEmpty) {
                           return "Por favor, digite sua senha!";
@@ -75,13 +83,26 @@ class _NewPassViewState extends State<NewPassView> {
                           return null;
                         }
                       },
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        enabledBorder: OutlineInputBorder(
+                      obscureText: _isHiddenPassFirst,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isHiddenPassFirst
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          color: Colors.white,
+                          onPressed: () {
+                            setState(() {
+                              _isHiddenPassFirst = !_isHiddenPassFirst;
+                            });
+                          },
+                        ),
+                        border: const OutlineInputBorder(),
+                        enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white60)),
                         labelText: "Nova Senha",
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                             color: Colors.white60, fontFamily: 'Roboto'),
                       ),
                       style: const TextStyle(color: Colors.white),
@@ -89,7 +110,7 @@ class _NewPassViewState extends State<NewPassView> {
                     ),
                     Container(height: 20),
                     TextFormField(
-                      controller: _conSenha,
+                      controller: _conPassController,
                       validator: (senha) {
                         if (senha!.isEmpty) {
                           return "Por favor, confirme sua senha!";
@@ -97,13 +118,26 @@ class _NewPassViewState extends State<NewPassView> {
                           return null;
                         }
                       },
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        enabledBorder: OutlineInputBorder(
+                      obscureText: _isHiddenPassSecond,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isHiddenPassSecond
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          color: Colors.white,
+                          onPressed: () {
+                            setState(() {
+                              _isHiddenPassSecond = !_isHiddenPassSecond;
+                            });
+                          },
+                        ),
+                        border: const OutlineInputBorder(),
+                        enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white60)),
                         labelText: "Confirmar Nova Senha",
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                             color: Colors.white60, fontFamily: 'Roboto'),
                       ),
                       style: const TextStyle(color: Colors.white),
@@ -115,12 +149,36 @@ class _NewPassViewState extends State<NewPassView> {
                       width: MediaQuery.of(context).size.width,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async{
                           _formKey.currentState!.validate();
-                          //newPass(cpf: , token: ,newPassword: _newSenha);
-                          if (_newSenha != _conSenha) {
-                            print("As senha precisam ser iguais!");
-                            //pop up dizendo que a senhas presisam ser iguais
+                          if (_newPassController.text != _conPassController.text) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.redAccent,
+                                  content: Text("As senhas precisam ser iguais!"),
+                                  behavior: SnackBarBehavior.floating,
+                                )
+                            );
+                          }else{
+                            RecoverCodeViewModel().doNewPass(_newPassController.text);
+                            if(await RecoverCodeViewModel().statusNewPass() == 200){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.deepPurple,
+                                    content: Text("Senha altera com sucesso!"),
+                                    behavior: SnackBarBehavior.floating,
+                                  )
+                              );
+                              Navigator.pushNamed(context, "/login");
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.deepPurple,
+                                    content: Text("Houve um erro, por favor tente mais tarde!"),
+                                    behavior: SnackBarBehavior.floating,
+                                  )
+                              );
+                            }
                           }
                         },
                         style: ButtonStyle(
@@ -162,4 +220,5 @@ class _NewPassViewState extends State<NewPassView> {
       ),
     );
   }
+
 }

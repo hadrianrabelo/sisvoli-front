@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:urnavotos/models/user_model.dart';
 import 'package:urnavotos/repositories/recover_code_repository.dart';
 import 'package:urnavotos/views/recover_pass_view.dart';
-import '/views/login_view.dart';
+//import '/views/login_view.dart';
 import '../values/background.dart';
 import '../values/custom_colors.dart';
+import '../view-models/recover_code_view_model.dart';
 
 class RecoverCodeView extends StatefulWidget {
   const RecoverCodeView({Key? key}) : super(key: key);
@@ -16,7 +21,7 @@ class RecoverCodeView extends StatefulWidget {
 class _RecoverCodeViewState extends State<RecoverCodeView> {
   final _formKey = GlobalKey<FormState>();
   CustomColors customColors = CustomColors();
-  final getCode = TextEditingController();
+  final  TextEditingController _codeController = TextEditingController();
   RecoverPassView cpf = const RecoverPassView();
 
   @override
@@ -69,7 +74,7 @@ class _RecoverCodeViewState extends State<RecoverCodeView> {
                       height: MediaQuery.of(context).size.height * 0.2,
                     ),
                     TextFormField(
-                        controller: getCode,
+                        controller: _codeController,
                         validator: (code) {
                           return code!.isEmpty ? "Código Inválido!" : null;
                         },
@@ -90,9 +95,30 @@ class _RecoverCodeViewState extends State<RecoverCodeView> {
                       width: MediaQuery.of(context).size.width,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async{
                           _formKey.currentState!.validate();
-                          recoverCode(cpf: cpf, token: getCode);
+                          RecoverCodeViewModel().doCode(_codeController.text);
+                          if(await RecoverCodeViewModel().statusRecoverCode() == "true"){
+                            Navigator.pushNamed(context, "/new_pass");
+                          }else if(await RecoverCodeViewModel().statusRecoverCode() == "false"){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.redAccent,
+                                  content: Text("O código está errado!"),
+                                  behavior: SnackBarBehavior.floating,
+                                )
+                            );
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.redAccent,
+                                  content: Text("Houve um erro, por favor tente mais tarde."),
+                                  behavior: SnackBarBehavior.floating,
+                                )
+                            );
+                          }
+                          //Navigator.pushNamed(context, '/new_pass');
+
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll(
@@ -113,12 +139,12 @@ class _RecoverCodeViewState extends State<RecoverCodeView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushAndRemoveUntil(
+                            /*Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const LoginView(),
                                 ),
-                                (route) => false);
+                                (route) => false);*/
                           },
                           child: const Text(
                             "Faça Login",
