@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:urnavotos/values/background.dart';
 import '../view-models/adress_page_model.dart';
 import 'package:http/http.dart' as http;

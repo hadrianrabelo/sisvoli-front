@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,9 +7,11 @@ void main(){
   userLogin(cpf: '91769407057',userPassword: '12345');
 }
 
+String _listApi = dotenv.get("API_HOST", fallback: "");
+
 Future<int?> userLogin({cpf, userPassword}) async{
   try{
-    var url = Uri.parse('http://10.0.0.136:8080/login');
+    var url = Uri.parse('$_listApi/login');
     var response = await http.post(url, body:{'userDocument':'$cpf', 'password':'$userPassword'});
     if(response.statusCode == 200){
       Map<String, dynamic> map = jsonDecode(response.body);

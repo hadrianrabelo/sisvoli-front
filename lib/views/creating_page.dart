@@ -502,9 +502,9 @@ class _RegisterPageState extends State<CreatingPage> {
                             CreatingPageModel().snackBarText(
                                 "A data e hora selecionada é invalida"));
                       }else if (formValid & chooseValid) {
-                        createPoll(_titleController, _descriptionController,
+                        CreatingController().createPoll(_titleController, _descriptionController,
                             dateTime, dateTimeSecond);
-                        if (CreatingPoll().statusCode != 200) {
+                        if (CreatingController().statusCode != 200) {
                           ScaffoldMessenger.of(context).showSnackBar(
                               CreatingPageModel().snackBarText(
                                   "Refaça o processo"));
