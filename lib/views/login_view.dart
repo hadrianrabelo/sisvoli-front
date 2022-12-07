@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/services.dart';
+import '../view-models/login_view_model.dart';
 import '/values/custom_colors.dart';
 import '/view-models/validation_view_model.dart';
 import '../repositories/login_repository.dart';
@@ -14,10 +15,11 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  bool _isHiddenPass = true;
   final _formKey = GlobalKey<FormState>();
   CustomColors customColors = CustomColors();
-  final  _getCpf = TextEditingController();
-  final  _getPass = TextEditingController();
+  final TextEditingController _cpfController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   ValidationViewModel validation = ValidationViewModel();
   String? setCpf;
   @override
@@ -52,7 +54,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     Container(height: MediaQuery.of(context).size.height * .15),
                     TextFormField(
-                      controller: _getCpf,
+                      controller: _cpfController,
                         //onChanged: loginViewModel.(value) => ,
                         validator: (cpf){
                             return validation.valiCpf(cpf) ? null : "CPF Inválido!";
@@ -72,17 +74,30 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      controller: _getPass,
+                      controller: _passwordController,
                       validator: (password){
                         return validation.valiPassword(password) ? "Senha Inválida!" : null;
                       },
                       style: const TextStyle(color: Colors.white),
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Senha", labelStyle: TextStyle(color: Colors.white60, fontSize: 17,fontFamily: 'Roboto'),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white60)),
-                          prefixIcon: Icon(Icons.key, color: Colors.white,),
+                      obscureText: _isHiddenPass,
+                      decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isHiddenPass
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            color: Colors.white,
+                            onPressed: () {
+                              setState(() {
+                                _isHiddenPass = !_isHiddenPass;
+                              });
+                            },
+                          ),
+                          border: const OutlineInputBorder(),
+                          labelText: "Senha", labelStyle: const TextStyle(color: Colors.white60, fontSize: 17,fontFamily: 'Roboto'),
+                          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white60)),
+                          prefixIcon: const Icon(Icons.key, color: Colors.white,),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -106,26 +121,25 @@ class _LoginViewState extends State<LoginView> {
                         width:MediaQuery.of(context).size.width,
                         height:50,
                         child:ElevatedButton(
-                            onPressed: (){
-                              if(_formKey.currentState!.validate()){
-                              setCpf =_getCpf.text.replaceAll(RegExp('[^A-Za-z0-9]'), '');
-                              userLogin(cpf: setCpf, userPassword: _getPass.text).then((value) {
-                                setState(() {
-                                  //print(value['access_token']);
-                                  if(value != null){
-                                    Navigator.pushNamed(context, '/survey');
-                                  }else{
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(backgroundColor: Colors.redAccent,
-                                          content: Text('Por favor verifique sua informações'),
-                                          behavior: SnackBarBehavior.floating,
-                                        )
-                                    );
-                                  }
-                                });
-                              });
+                            onPressed: ()async{
+                              _formKey.currentState!.validate();
+                              setCpf =_cpfController.text.replaceAll(RegExp('[^A-Za-z0-9]'), '');
+                              if(await LoginViewModel().doLogin(setCpf, _passwordController.text) == 200){
+                                Navigator.pushNamed(context, '/survey');
+                              }else if(await LoginViewModel().doLogin(setCpf, _passwordController.text) == 403){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(backgroundColor: Colors.redAccent,
+                                      content: Text('Por favor verifique suas informações!'),
+                                      behavior: SnackBarBehavior.floating,
+                                    )
+                                );
                               }else{
-                                print("Informações Inválidas!");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(backgroundColor: Colors.redAccent,
+                                      content: Text('Houve um erro, porfavor tente novamente mais tarde!'),
+                                      behavior: SnackBarBehavior.floating,
+                                    )
+                                );
                               }
                             },
                             style: ButtonStyle(
