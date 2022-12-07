@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:urnavotos/views/bottom_bar_view.dart';
 import 'package:urnavotos/views/edit_profile_view.dart';
+import 'package:urnavotos/views/poll_view.dart';
 import '/views/new_pass_view.dart';
 import '/views/recover_code_view.dart';
 import '/views/recover_pass_view.dart';

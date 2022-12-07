@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -177,6 +178,8 @@ class VoteController {
   }
 }
 
+
+////////////////////////////////////////////////////
 class PollResultController {
 
   late final _token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDI4NzE1MX0.YuXcjkLwcyUBDlZJgTG8mH00Mu9lQWSILAq0HGlPQu0";
@@ -201,31 +204,39 @@ class PollResultController {
   }
 }
 
+///////////////////////CREATING PAGE/////////////////////////
+class CreatingController {
+  var statusCode = 0;
 
-Future createPoll(title, description, startDate, endDate) async {
-  Map<String, String> body = {
-    "title": "$title",
-    "description": "$description",
-    "startDate": "$startDate",
-    "endDate": "$endDate"
-  };
 
-  var url = Uri.parse("$_listApi/poll/new");
-  var token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDAyMTA5MX0.9vqpEBzMxKqWkvPVytkHsQGBGO5OeVlEKuwcf5Q2A-k';
-  var response = await http.post(
-    url,
-    headers: {
-      HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.authorizationHeader: 'Bearer $token',
-    },
-    body: jsonEncode(body),
-  );
-  print(response.body);
-  print(response.statusCode);
-  if(response.statusCode == 200) {
-    CreatingPoll().statusCode = response.statusCode;
-  } else if (response.statusCode != 200) {
-    CreatingPoll().statusCode = response.statusCode;
+
+  createPoll(title, description, startDate, endDate) async {
+    Map<String, String> body = {
+      "title": "$title",
+      "description": "$description",
+      "startDate": "$startDate",
+      "endDate": "$endDate"
+    };
+
+    var url = Uri.parse("$_listApi/poll/new");
+    var token =
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDAyMTA5MX0.9vqpEBzMxKqWkvPVytkHsQGBGO5OeVlEKuwcf5Q2A-k';
+    var response = await http.post(
+      url,
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if(response.statusCode == 200) {
+      CreatingController().statusCode = response.statusCode;
+    } else if (response.statusCode != 200) {
+      CreatingController().statusCode = response.statusCode;
+    }
   }
+
+
 }
+

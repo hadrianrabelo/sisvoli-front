@@ -7,8 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:urnavotos/main.dart';
+import 'package:urnavotos/my_app_widget.dart';
 import 'package:urnavotos/views/login_view.dart';
 
 void main() {

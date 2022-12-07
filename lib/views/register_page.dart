@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:urnavotos/values/background.dart';
-import 'package:urnavotos/sisvoli-modules/register_module.dart';
+import 'package:urnavotos/repositories/register_module.dart';
 import 'package:brasil_fields/brasil_fields.dart';
-import 'package:urnavotos/view_models/register_page_model.dart';
+import 'package:urnavotos/view-models/register_page_model.dart';
 import 'package:intl/intl.dart';
 import '../values/custom_colors.dart';
 

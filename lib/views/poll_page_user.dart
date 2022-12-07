@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:urnavotos/sisvoli-modules/creating_module.dart';
+import 'package:urnavotos/repositories/creating_module.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:intl/intl.dart';
-import 'package:urnavotos/view_models/editing_poll_page_model.dart';
+import 'package:urnavotos/view-models/editing_poll_page_model.dart';
 
 class PollPageUser extends StatefulWidget {
   const PollPageUser({Key? key}) : super(key: key);
