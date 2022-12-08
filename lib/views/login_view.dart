@@ -97,7 +97,7 @@ class _LoginViewState extends State<LoginView> {
                           border: const OutlineInputBorder(),
                           labelText: "Senha", labelStyle: const TextStyle(color: Colors.white60, fontSize: 17,fontFamily: 'Roboto'),
                           enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white60)),
-                          prefixIcon: const Icon(Icons.key, color: Colors.white,),
+                          prefixIcon: const Icon(Icons.lock, color: Colors.white,),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -125,7 +125,7 @@ class _LoginViewState extends State<LoginView> {
                               _formKey.currentState!.validate();
                               setCpf =_cpfController.text.replaceAll(RegExp('[^A-Za-z0-9]'), '');
                               if(await LoginViewModel().doLogin(setCpf, _passwordController.text) == 200){
-                                Navigator.pushNamed(context, '/survey');
+                                Navigator.pushNamed(context, '/bottom_bar');
                               }else if(await LoginViewModel().doLogin(setCpf, _passwordController.text) == 403){
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(backgroundColor: Colors.redAccent,
@@ -150,7 +150,9 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         const Text("É novo por aqui?", style: TextStyle(color: Color.fromRGBO(255, 255, 255, 0.6)),),
                         TextButton(
-                            onPressed: (){},
+                            onPressed: (){
+                              Navigator.pushNamed(context, '/register');
+                            },
                             child:
                             const Text(
                                 "Registre-se",

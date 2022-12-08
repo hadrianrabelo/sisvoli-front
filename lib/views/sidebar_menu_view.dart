@@ -71,7 +71,7 @@ class _MenuViewState extends State<MenuView> {
           onTap: (){
             Navigator.pop(context);
 
-            Navigator.pushNamed(context, '');
+            Navigator.pushNamed(context, '/edit_profile');
             },
         ),
         const Divider(color: Colors.white54,
@@ -83,7 +83,7 @@ class _MenuViewState extends State<MenuView> {
           onTap: (){
             Navigator.pop(context);
 
-            Navigator.pushNamed(context, '');
+            Navigator.pushNamed(context, '/address');
           },
         ),
         const Divider(color: Colors.white54,

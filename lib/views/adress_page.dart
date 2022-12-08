@@ -397,8 +397,20 @@ class _AdressPageState extends State<AdressPage> {
                           setState(() {
                             if(value == 200){
                               print("Deu Certo");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(backgroundColor: Colors.redAccent,
+                                    content: Text('Informações salvas com sucesso!'),
+                                    behavior: SnackBarBehavior.floating,
+                                  )
+                              );
                             }else{
                               print("Deu Errado");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(backgroundColor: Colors.redAccent,
+                                    content: Text('Houve um erro, verifique suas informações!'),
+                                    behavior: SnackBarBehavior.floating,
+                                  )
+                              );
                             }
                           });
                         });
@@ -415,8 +427,20 @@ class _AdressPageState extends State<AdressPage> {
                           setState(() {
                             if(value == 200){
                               print("Deu Certo");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(backgroundColor: Colors.redAccent,
+                                    content: Text('Informações salvas com sucesso!'),
+                                    behavior: SnackBarBehavior.floating,
+                                  )
+                              );
                             }else{
                               print("Deu Errado");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(backgroundColor: Colors.redAccent,
+                                    content: Text('Houve um erro, verifique suas informações!'),
+                                    behavior: SnackBarBehavior.floating,
+                                  )
+                              );
                             }
                           });
                         });
