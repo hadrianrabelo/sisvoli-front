@@ -41,16 +41,12 @@ class _RegisterPageState extends State<CreatingPage> {
               fontFamily: 'Inter',
             ),
           ),
-          actions: const [
-            Icon(
-              Icons.menu,
-              size: 38,
-              color: Colors.white,
-            ),
-            SizedBox(
-              width: 30,
-            )
-          ],
+          leading: IconButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
+          ),
         ),
         body: BackGround(
           background: Form(
@@ -509,11 +505,12 @@ class _RegisterPageState extends State<CreatingPage> {
                               CreatingPageModel().snackBarText(
                                   "Refaça o processo"));
                         }
-                      } else {ScaffoldMessenger.of(context).showSnackBar(
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
                           CreatingPageModel().snackBarText(
                               "Preencha as opções corretamente"));}
 
-                    },
+                    },// adicionar Navigator.pop(context); e uma snack bar dizendo que a criacao da enquete foi sucesso
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(
                           Color.fromRGBO(38, 110, 215, 1.0)),

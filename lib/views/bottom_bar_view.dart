@@ -34,9 +34,7 @@ class _BottomBarViewState extends State<BottomBarView> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.pop(context);
-
-          Navigator.pushNamed(context, '/login');
+          Navigator.pushNamed(context, '/create_poll');
         },
         backgroundColor: CustomColors().getPrimaryButton,
         child: const Icon(Icons.add, color: Colors.black),

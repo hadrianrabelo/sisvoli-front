@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +8,6 @@ import 'package:urnavotos/values/background.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-
 import 'login_view.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -370,7 +368,32 @@ class _EditProfileViewState extends State<EditProfileView> {
                           email: mailController.text,
                           password: _comparePassword,
                           birthDate: _dateController.text
-                      );
+                      ).then((value) {
+                        setState(() {
+                          if(value == 200){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(backgroundColor: Colors.redAccent,
+                                  content: Text('Informações salvas com sucesso!'),
+                                  behavior: SnackBarBehavior.floating,
+                                )
+                            );
+                          }else if(value == 404){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(backgroundColor: Colors.redAccent,
+                                  content: Text('Houve um erro, verifique suas informações!'),
+                                  behavior: SnackBarBehavior.floating,
+                                )
+                            );
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(backgroundColor: Colors.redAccent,
+                                  content: Text('Houve um erro, por favor tente mais tarde!'),
+                                  behavior: SnackBarBehavior.floating,
+                                )
+                            );
+                          }
+                        });
+                      });
                       print("data: ${_dateController.text}");
                       /*var formValid =
                           _formKey.currentState?.validate() ?? false;
@@ -427,7 +450,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       });
     }
   }
-  Future editUser({name,gender,email,password,birthDate}) async{
+  Future<int> editUser({name,gender,email,password,birthDate}) async{
     var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjUwMzM2fQ.g1muIvH24lBYUHkdDOgY9MOUSbAHi_Bt20qh_gkgL4s';
     Map<String, String> bodyContent = {
       "name": name,
@@ -474,6 +497,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
     print(jsonEncode(bodyContent));
     print(response.statusCode);
+    return response.statusCode;
   }
 }
 class AlwaysDisabledFocusNode extends FocusNode {
