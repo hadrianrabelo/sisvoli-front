@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urnavotos/auth/auth_user.dart';
 import 'package:urnavotos/models/survey_model.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:http/http.dart' as http;
 import 'package:urnavotos/views/sidebar_menu_view.dart';
+import '../repositories/login_repository.dart';
 import '../values/custom_colors.dart';
 
 class PollView extends StatefulWidget {
@@ -27,7 +29,7 @@ class _PollViewState extends State<PollView> {
   int pageNumber = 0;
   bool isLoading = false;
   bool isLastPage = false;
-
+  String _listApi = dotenv.get("API_HOST", fallback: "");
   infiniteScrolling(){
     if(_scrollController.offset == _scrollController.position.maxScrollExtent){
       if(isLastPage == false){
@@ -169,15 +171,17 @@ class _PollViewState extends State<PollView> {
     if(isLoading) return;
     isLoading = true;
     int pageSize = 10;
-    //fazer refresh token com tempo, accessToken expira em 10 minutos refreshToken expira 30 minutos
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? accessToken = prefs.getString('access_token');
-    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjY5NTA3NDEwfQ.jM7iyaASmg4CFFUVoD4XwBZqYv6JFrXGxOXwym2ZfII';
-    var url = Uri.parse('http://10.0.0.136:8080/poll/list?pageSize=$pageSize&pageNumber=$pageNumber');
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
+    var url = Uri.parse('$_listApi/poll/list?pageSize=$pageSize&pageNumber=$pageNumber');
     var response = await http.get(url,
         headers:{
           HttpHeaders.contentTypeHeader:'application/json',
-          HttpHeaders.authorizationHeader: "Bearer $token",
+          HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
           //HttpHeaders.acceptCharsetHeader: 'UTF-8',
           //'Content-Type': 'application/json',
           //'Accept': 'application/json',

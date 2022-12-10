@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:urnavotos/models/profile_model.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import '../repositories/login_repository.dart';
 import 'login_view.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -18,6 +20,7 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
+  String _listApi = dotenv.get("API_HOST", fallback: "");
   bool _isHiddenPassFirst = true;
   bool _isHiddenPassSecond = true;
   final _formKey = GlobalKey<FormState>();
@@ -426,13 +429,18 @@ class _EditProfileViewState extends State<EditProfileView> {
     ),
   );
   Future<void> getUser() async{
-    var url = Uri.parse("http://10.0.0.136:8080/user/user-data");
-    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjUwMzM2fQ.g1muIvH24lBYUHkdDOgY9MOUSbAHi_Bt20qh_gkgL4s';
+    var url = Uri.parse("$_listApi/user/user-data");
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
     var response = await http.get(url,
         headers:
         {
           HttpHeaders.contentTypeHeader:'application/json',
-          HttpHeaders.authorizationHeader: "Bearer $token",
+          HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
         });
     if(response.statusCode == 200){
       //print("Deu Certo");
@@ -451,7 +459,12 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
   }
   Future<int> editUser({name,gender,email,password,birthDate}) async{
-    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjUwMzM2fQ.g1muIvH24lBYUHkdDOgY9MOUSbAHi_Bt20qh_gkgL4s';
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
     Map<String, String> bodyContent = {
       "name": name,
       "gender": gender,
@@ -486,12 +499,12 @@ class _EditProfileViewState extends State<EditProfileView> {
       }
     });*/
     print(jsonEncode(bodyContent));
-    var url = Uri.parse("http://10.0.0.136:8080/user/update");
+    var url = Uri.parse("$_listApi/user/update");
     var response = await http.put(
       url,
       headers:{
         HttpHeaders.contentTypeHeader:'application/json',
-        HttpHeaders.authorizationHeader: "Bearer $token",
+        HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
       },
       body: jsonEncode(bodyContent),
     );

@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urnavotos/auth/auth_user.dart';
 import 'package:urnavotos/models/survey_model.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:http/http.dart' as http;
 import 'package:urnavotos/views/sidebar_menu_view.dart';
+import '../repositories/login_repository.dart';
 import '../values/custom_colors.dart';
 
 class SurveyView extends StatefulWidget {
@@ -18,8 +20,8 @@ class SurveyView extends StatefulWidget {
   class _SurveyViewState extends State<SurveyView> {
   late Future<List<SurveyModel>> surveys;
   late final ScrollController _scrollController;
-  final loading = ValueNotifier(true);
   int currentTab = 0;
+  String _listApi = dotenv.get("API_HOST", fallback: "");
 
   @override
  void initState() {
@@ -48,14 +50,12 @@ class SurveyView extends StatefulWidget {
   }
 
   infiniteScrolling(){
-    if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !loading.value){
+    if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent){
       loadSurvey();
     }
   }
   loadSurvey() async{
-    loading.value = true;
     surveys = surveyList();
-    loading.value = false;
   }
     @override
     Widget build(BuildContext context) {
@@ -148,49 +148,36 @@ class SurveyView extends StatefulWidget {
       );
     }
     Future<List<SurveyModel>> surveyList() async{
+      /*SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? access_token = prefs.getString('access_token');
+      String? accessTokenn = jsonDecode(access_token!);*/
     //fazer refresh token com tempo, accessToken expira em 10 minutos refreshToken expira 30 minutos
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? accessToken = prefs.getString('access_token');
-      var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjY5NTA3NDEwfQ.jM7iyaASmg4CFFUVoD4XwBZqYv6JFrXGxOXwym2ZfII';
-      var url = Uri.parse('http://10.0.0.136:8080/poll/list/my');
+      var token = {};
+      await accessToken().then((value) {
+        setState(() {
+          token = value;
+        });
+      });
+      print("$token");
+      //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwNzA1NDIxfQ.Km-Fj6WSNq6gutScBPuQTpQS36NFtBIOrLj3Mk0E5wQ';
+      var url = Uri.parse('$_listApi/poll/list/my');
       var response = await http.get(url,
           headers:{
             HttpHeaders.contentTypeHeader:'application/json',
-            HttpHeaders.authorizationHeader: "Bearer $token",
+            HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
             //HttpHeaders.acceptCharsetHeader: 'UTF-8',
             //'Content-Type': 'application/json',
             //'Accept': 'application/json',
             //'Authorization': 'Bearer $accessToken',
           });
       if(response.statusCode == 200){
+        print("ok");
         List listSurvey = jsonDecode(const Utf8Decoder().convert(response.bodyBytes));
         return listSurvey.map((json) => SurveyModel.fromJson(json)).toList();
       }else{
         print("Nada");
         throw Exception('Erro não foi possivel carregar as enquetes.');
       }
-    }
-    loadingIndicatorWidget(){
-        return ValueListenableBuilder(
-            valueListenable: loading,
-            builder: (context, bool isLoading, _){
-              return(isLoading)
-                  ? Positioned(
-                      left: (MediaQuery.of(context).size.width / 2)-20,
-                      bottom: 24,
-                      child: const SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    )
-                  : Container();
-            });
-
     }
 
   }
