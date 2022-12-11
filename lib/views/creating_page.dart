@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:urnavotos/repositories/creating_module.dart';
+import 'package:urnavotos/repositories/creating_poll_repository.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:urnavotos/values/custom_colors.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +45,7 @@ class _RegisterPageState extends State<CreatingPage> {
             onPressed: (){
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
           ),
         ),
         body: BackGround(
@@ -498,12 +498,18 @@ class _RegisterPageState extends State<CreatingPage> {
                             CreatingPageModel().snackBarText(
                                 "A data e hora selecionada é invalida"));
                       }else if (formValid & chooseValid) {
-                        CreatingController().createPoll(_titleController, _descriptionController,
-                            dateTime, dateTimeSecond);
-                        if (CreatingController().statusCode != 200) {
+                        CreatingController().createPoll(_titleController.text, _descriptionController.text,
+                            dateTime.toIso8601String(), dateTimeSecond.toIso8601String());
+                        print("esse é antes ${CreatingController().statusCode}");
+                        if (CreatingController().statusCode == 201) {
                           ScaffoldMessenger.of(context).showSnackBar(
                               CreatingPageModel().snackBarText(
-                                  "Refaça o processo"));
+                                  "Tudo Certo"));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              CreatingPageModel().snackBarText(
+                                  "Tente novamente"));
+                          print(CreatingController().statusCode);
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
