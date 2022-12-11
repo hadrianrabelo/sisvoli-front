@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import '../models/poll_model.dart';
 import '../models/poll_result_model.dart';
+import 'login_repository.dart';
 
 String _listApi = dotenv.get("API_HOST", fallback: "");
 
@@ -16,16 +17,19 @@ class PollController {
   DateTime dateTimeSecond = DateTime(2022, 02, 02, 12, 00);
   List<dynamic> list = [];
   String? description;
-  late final _token =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDIxMjIzMH0.vgro6isPzwxE572FFBWQZxT_--zWIwhFMMuLB143UEs";
   String? returnMessage;
+
 
   getPollSec() async {
     var url =
         Uri.parse("$_listApi/poll/list/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
+    var token = {};
+    await accessToken().then((value) {
+      token = value;
+    });
     var response = await http.get(url, headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.authorizationHeader: 'Bearer $_token',
+      HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
     });
 
     if (response.statusCode == 200) {
@@ -77,9 +81,13 @@ class PollController {
 
       var url =
           Uri.parse("$_listApi/poll/put/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
+      var token = {};
+      await accessToken().then((value) {
+        token = value;
+      });
       var response = await http.put(url,
           headers: {
-            HttpHeaders.authorizationHeader: 'Bearer $_token',
+            HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
             HttpHeaders.contentTypeHeader: 'application/json',
           },
           body: jsonEncode(body));
@@ -109,9 +117,13 @@ class VoteController {
   getPollSec() async {
     var url =
     Uri.parse("$_listApi/poll/list/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
+    var token = {};
+    await accessToken().then((value) {
+      token = value;
+    });
     var response = await http.get(url, headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.authorizationHeader: 'Bearer $_token',
+      HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
     });
 
     if (response.statusCode == 200) {
@@ -163,9 +175,13 @@ class VoteController {
 
       var url =
       Uri.parse("$_listApi/poll/put/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
+      var token = {};
+      await accessToken().then((value) {
+        token = value;
+      });
       var response = await http.put(url,
           headers: {
-            HttpHeaders.authorizationHeader: 'Bearer $_token',
+            HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
             HttpHeaders.contentTypeHeader: 'application/json',
           },
           body: jsonEncode(body));
@@ -189,8 +205,12 @@ class PollResultController {
   getPollSec() async {
     var url =
     Uri.parse("$_listApi/poll/indicators/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
+    var token = {};
+    await accessToken().then((value) {
+      token = value;
+    });
     var response = await http.get(url, headers: {
-      HttpHeaders.authorizationHeader: 'Bearer $_token',
+      HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
     });
 
     if (response.statusCode == 200) {
@@ -219,13 +239,15 @@ class CreatingController {
     };
 
     var url = Uri.parse("$_listApi/poll/new");
-    var token =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDAyMTA5MX0.9vqpEBzMxKqWkvPVytkHsQGBGO5OeVlEKuwcf5Q2A-k';
+    var token = {};
+    await accessToken().then((value) {
+      token = value;
+    });
     var response = await http.post(
       url,
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
-        HttpHeaders.authorizationHeader: 'Bearer $token',
+        HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
       },
       body: jsonEncode(body),
     );

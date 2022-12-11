@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:urnavotos/values/custom_colors.dart';
+import '../repositories/login_repository.dart';
+import 'package:http/http.dart' as http;
 
 class MenuView extends StatefulWidget {
   const MenuView({Key? key}) : super(key: key);
@@ -12,10 +17,15 @@ class MenuView extends StatefulWidget {
 }
 
 class _MenuViewState extends State<MenuView> {
-  String? userName = "Ryan";
+  String _listApi = dotenv.get("API_HOST", fallback: "");
+  late Map<String, dynamic> userName = {};
   final urlImage = 'assets/images/sisvoli.png';
   @override
-
+    void initState() {
+      getData();
+      super.initState();
+    }
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
@@ -45,7 +55,7 @@ class _MenuViewState extends State<MenuView> {
         ),
         //Icon(Icons.account_circle, color: Colors.white,size: 100,),
         const SizedBox(height: 12 ,),
-        Text('Olá, $userName', style: const TextStyle(color: Colors.white, fontSize: 25),),
+        Text('Olá, ${userName['name']}', style: const TextStyle(color: Colors.white, fontSize: 25),),
         const SizedBox(height: 12,),
       ],
     ),
@@ -92,12 +102,36 @@ class _MenuViewState extends State<MenuView> {
         ListTile(
           leading: const Icon(Icons.logout_outlined, color: Colors.white54,),
           title: const Text("Sair", style: TextStyle(color: Colors.white),),
-          onTap: (){
-            //apagar todas as informacoes do usuario salvas no sharedpreferences
+          onTap: () async {
             Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.remove('access_token');
+            await prefs.remove('refresh_token');
+            await prefs.remove('user_cpf');
           },
         ),
       ],
     ),
   );
+  Future getData() async{
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
+    var url = Uri.parse("$_listApi/user/user-data/");
+    var response = await http.get(
+      url,
+      headers: {
+        HttpHeaders.contentTypeHeader:'application/json',
+        HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
+      },
+    );
+    if(response.statusCode == 200){
+      setState(() {
+        userName.addAll(jsonDecode(response.body));
+      });
+    }
+  }
 }

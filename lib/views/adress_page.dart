@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:urnavotos/values/background.dart';
+import '../repositories/login_repository.dart';
 import '../view-models/adress_page_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,6 +15,7 @@ class AdressPage extends StatefulWidget {
 }
 
 class _AdressPageState extends State<AdressPage> {
+  String _listApi = dotenv.get("API_HOST", fallback: "");
   final _formKey = GlobalKey<FormState>();
   late Future<Map<String,dynamic>> estados;
   late Future<List<String>> estado;
@@ -473,29 +476,25 @@ class _AdressPageState extends State<AdressPage> {
       ),
     );
   }
-  var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMzY1Nzc5fQ.W6uzaTmwm5OpjbI_28ta3GGSZGKCPN5BZEl2wZ8VEFQ';
   Future<int> getAddress() async{
-    var url = Uri.parse("http://10.0.0.136:8080/address/");
-    //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjc0OTkwfQ.9NKf88Ypds7cWD5m_QckFXG_wsv2Fo5ithIGGH_SQAY';
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
+    var url = Uri.parse("$_listApi/address/");
     var response = await http.get(
         url,
         headers: {
           HttpHeaders.contentTypeHeader:'application/json',
-          HttpHeaders.authorizationHeader: "Bearer $token",
+          HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
         },
     );
     if(response.statusCode == 200){
       Map<String, dynamic> listAddress = jsonDecode(response.body);
       print(listAddress);
-     /* List<String> items = [];
-      var jsonData = json.decode(response.body) as List;
-      for (var element in jsonData) {
-        items.add(element["ClassName"]);
-      }
-      setState(() {
-        isLoading = false;
-      });
-      return items;*/
+
       setState(() {
         isLoading = false;
         _userAddress.addAll(listAddress);
@@ -516,8 +515,13 @@ class _AdressPageState extends State<AdressPage> {
     return response.statusCode;
   }
   Future editAddress({zipCode,number,street,district,complement,cityId}) async{
-    //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjc0OTkwfQ.9NKf88Ypds7cWD5m_QckFXG_wsv2Fo5ithIGGH_SQAY';
-    var url = Uri.parse('http://10.0.0.136:8080/address/');
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
+    var url = Uri.parse('$_listApi/address/');
     Map<String, String> bodyContent = {
       "zipCode": zipCode,
       "number": number,
@@ -552,12 +556,17 @@ class _AdressPageState extends State<AdressPage> {
     }
     var response = http.put(url,headers:{
       HttpHeaders.contentTypeHeader:'application/json',
-      HttpHeaders.authorizationHeader: "Bearer $token",
+      HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
     } ,body:jsonEncode(bodyContent));
   }
   Future registerAddress({zipCode,number,street,district,complement,cityId}) async{
-    var url = Uri.parse('http://10.0.0.136:8080/address/');
-    //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjc0OTkwfQ.9NKf88Ypds7cWD5m_QckFXG_wsv2Fo5ithIGGH_SQAY';
+    var url = Uri.parse('$_listApi/address/');
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
     Map<String, String> bodyContent = {
       "zipCode": zipCode, // cep
       "number": number, // numero da casa
@@ -569,17 +578,23 @@ class _AdressPageState extends State<AdressPage> {
     var response = http.post(url,
         headers: {
       HttpHeaders.contentTypeHeader:'application/json',
-      HttpHeaders.authorizationHeader: "Bearer $token",
+      HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
     },
         body: jsonEncode(bodyContent)
     );
   }
   Future getStateList() async{
     //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjc0OTkwfQ.9NKf88Ypds7cWD5m_QckFXG_wsv2Fo5ithIGGH_SQAY';
-    var url = Uri.parse('http://10.0.0.136:8080/state/all');
+    var url = Uri.parse('$_listApi/state/all');
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
     var response = await http.get(url, headers: {
       HttpHeaders.contentTypeHeader:'application/json; charset=utf-8',
-      HttpHeaders.authorizationHeader: "Bearer $token",
+      HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
     });
     List stateList = jsonDecode(const Utf8Decoder().convert(response.bodyBytes));
     setState(() {
@@ -587,10 +602,16 @@ class _AdressPageState extends State<AdressPage> {
     });
   }
   Future _getCityById({id}) async{
-    var url = Uri.parse('http://10.0.0.136:8080/city/$id');
+    var url = Uri.parse('$_listApi/city/$id');
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
     var response = await http.get(url,headers: {
       HttpHeaders.contentTypeHeader:'application/json',
-      HttpHeaders.authorizationHeader: "Bearer $token",
+      HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
     });
     Map<String, dynamic> stateId = jsonDecode(const Utf8Decoder().convert(response.bodyBytes));
     print(stateId['stateId']);
@@ -603,11 +624,16 @@ class _AdressPageState extends State<AdressPage> {
     //print(jsonDecode(const Utf8Decoder().convert(response.bodyBytes))['stateId']);
   }
   Future _getCitiesList({state}) async{
-    //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjc0OTkwfQ.9NKf88Ypds7cWD5m_QckFXG_wsv2Fo5ithIGGH_SQAY';
-    var url = Uri.parse('http://10.0.0.136:8080/state/$state/cities');
+    var url = Uri.parse('$_listApi/state/$state/cities');
+    var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
     var response = await http.get(url, headers: {
       HttpHeaders.contentTypeHeader:'application/json',
-      HttpHeaders.authorizationHeader: "Bearer $token",
+      HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
     });
     List cityList = jsonDecode(const Utf8Decoder().convert(response.bodyBytes));
     setState(() {
