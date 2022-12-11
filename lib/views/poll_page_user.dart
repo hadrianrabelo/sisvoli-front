@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:urnavotos/repositories/creating_module.dart';
+import 'package:urnavotos/repositories/creating_poll_repository.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:intl/intl.dart';
 import 'package:urnavotos/view-models/editing_poll_page_model.dart';
