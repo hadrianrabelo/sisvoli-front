@@ -3,7 +3,9 @@ import 'package:urnavotos/views/adress_page.dart';
 import 'package:urnavotos/views/bottom_bar_view.dart';
 import 'package:urnavotos/views/creating_page.dart';
 import 'package:urnavotos/views/edit_profile_view.dart';
+import 'package:urnavotos/views/poll_page_user.dart';
 import 'package:urnavotos/views/poll_view.dart';
+import 'package:urnavotos/views/user_poll_view.dart';
 import '/views/new_pass_view.dart';
 import '/views/recover_code_view.dart';
 import '/views/recover_pass_view.dart';
@@ -34,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/edit_profile':(context) => const EditProfileView(),
         '/address':(context) => const AdressPage(),
         '/create_poll':(context) => const CreatingPage(),
+        '/user_poll':(context) => const UserPollView(),
       },
     );
   }
