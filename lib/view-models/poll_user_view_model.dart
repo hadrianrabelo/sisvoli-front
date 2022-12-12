@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AdressPageModel {
-
-
-
-}
+class PollUserPageModel {}
 
 class AlwaysDisabledFocusNode extends FocusNode {
   @override

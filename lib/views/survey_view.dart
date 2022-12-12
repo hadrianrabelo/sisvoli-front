@@ -7,8 +7,8 @@ import 'package:urnavotos/auth/auth_user.dart';
 import 'package:urnavotos/models/survey_model.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:http/http.dart' as http;
+import 'package:urnavotos/views/editing_poll_page.dart';
 import 'package:urnavotos/views/sidebar_menu_view.dart';
-import 'package:urnavotos/views/user_poll_view.dart';
 import '../repositories/login_repository.dart';
 import '../values/custom_colors.dart';
 
@@ -101,7 +101,7 @@ class SurveyView extends StatefulWidget {
                                         trailing: const Icon(Icons.arrow_forward_ios_outlined, color: Colors.white,),
                                         onTap: (){
                                           //Navigator.pushNamed(context, '/user_poll');
-                                          Navigator.push(context, MaterialPageRoute(builder: (context)=> UserPollView(pollId: survey.id!,)));
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => EditingPollPage(pollId: survey.id!)));
                                           //aqui fica o navigator para cada pagina
                                         },
                                 ),

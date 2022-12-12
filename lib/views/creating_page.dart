@@ -523,7 +523,8 @@ class _RegisterPageState extends State<CreatingPage> {
                               backgroundColor: Colors.green,
                             ),
                           );
-                        } catch (_) {
+                        } catch (e) {
+                          print(e);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
