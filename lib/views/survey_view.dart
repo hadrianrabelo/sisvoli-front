@@ -99,7 +99,7 @@ class SurveyView extends StatefulWidget {
                                         tileColor: Colors.white,
                                         trailing: const Icon(Icons.arrow_forward_ios_outlined, color: Colors.white,),
                                         onTap: (){
-                                          //Navigator.pushNamed(context, '/login');
+                                          Navigator.pushNamed(context, '/user_poll');
                                           //Navigator.push(context, MaterialPageRoute(builder: (context)=> pagina(index)));
                                           //aqui fica o navigator para cada pagina
                                         },
@@ -148,10 +148,6 @@ class SurveyView extends StatefulWidget {
       );
     }
     Future<List<SurveyModel>> surveyList() async{
-      /*SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? access_token = prefs.getString('access_token');
-      String? accessTokenn = jsonDecode(access_token!);*/
-    //fazer refresh token com tempo, accessToken expira em 10 minutos refreshToken expira 30 minutos
       var token = {};
       await accessToken().then((value) {
         setState(() {
@@ -159,7 +155,6 @@ class SurveyView extends StatefulWidget {
         });
       });
       print("$token");
-      //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwNzA1NDIxfQ.Km-Fj6WSNq6gutScBPuQTpQS36NFtBIOrLj3Mk0E5wQ';
       var url = Uri.parse('$_listApi/poll/list/my');
       var response = await http.get(url,
           headers:{

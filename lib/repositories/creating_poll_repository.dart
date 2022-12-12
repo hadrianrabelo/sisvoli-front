@@ -110,8 +110,6 @@ class VoteController {
   DateTime dateTimeSecond = DateTime(2022, 02, 02, 12, 00);
   List<dynamic> list = [];
   String? description;
-  late final _token =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDI4MDEyOX0.MN8WtAqVqR47-7P1TLPfM8Nt6zwrcnGWkiJ_GVtg6qM";
   String? returnMessage;
 
   getPollSec() async {
