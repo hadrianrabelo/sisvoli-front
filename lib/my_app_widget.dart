@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sisvoli',
       debugShowCheckedModeBanner: false,
-      home: PollPageUser(),
+      home: const LoginView(),
      //initialRoute: '/login',
       routes: {
         '/login':(context) => const LoginView(),
@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
         '/edit_profile':(context) => const EditProfileView(),
         '/address':(context) => const AdressPage(),
         '/create_poll':(context) => const CreatingPage(),
-        //'/user_poll':(context) => const UserPollView(),
       },
     );
   }

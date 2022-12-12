@@ -20,8 +20,6 @@ class PollPageUser extends StatefulWidget {
 
 class _PullPageUserState extends State<PollPageUser> {
   final _formKey = GlobalKey<FormState>();
-  final _chooseKey = GlobalKey<FormState>();
-  final PollController _controller = PollController();
   String _listApi = dotenv.get("API_HOST", fallback: "");
   Map<String, dynamic> resultList= {};
   bool isLoading = true;
@@ -155,7 +153,7 @@ class _PullPageUserState extends State<PollPageUser> {
                                       dataSource: _chartData,
                                       xValueMapper: (GDPData data,_) => data.continent,
                                       yValueMapper: (GDPData data,_) => data.gdp,
-                                      dataLabelSettings: DataLabelSettings(isVisible: true)
+                                      dataLabelSettings: const DataLabelSettings(isVisible: true)
                                     )
                                   ],
                                 ),

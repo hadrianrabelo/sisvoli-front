@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:urnavotos/values/background.dart';
 import '../repositories/login_repository.dart';
-import '../view-models/adress_page_model.dart';
+import '../view-models/poll_user_view_model.dart';
 import 'package:http/http.dart' as http;
 
 class AdressPage extends StatefulWidget {

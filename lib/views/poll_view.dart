@@ -8,6 +8,7 @@ import 'package:urnavotos/models/survey_model.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:http/http.dart' as http;
 import 'package:urnavotos/views/sidebar_menu_view.dart';
+import 'package:urnavotos/views/user_poll_view.dart';
 import '../repositories/login_repository.dart';
 import '../values/custom_colors.dart';
 
@@ -117,6 +118,7 @@ class _PollViewState extends State<PollView> {
                                   tileColor: Colors.white,
                                   trailing: const Icon(Icons.arrow_forward_ios_outlined, color: Colors.white,),
                                   onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => UserPollView(pollId: post['id'],)));
                                     //Navigator.pushNamed(context, '/login');
                                     //Navigator.push(context, MaterialPageRoute(builder: (context)=> pagina(index)));
                                     //aqui fica o navigator para cada pagina
