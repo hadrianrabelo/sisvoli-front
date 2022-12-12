@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:urnavotos/repositories/creating_poll_repository.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:intl/intl.dart';
 import 'package:urnavotos/view-models/editing_poll_page_model.dart';
+import 'package:http/http.dart' as http;
+import '../repositories/login_repository.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class PollPageUser extends StatefulWidget {
   const PollPageUser({Key? key}) : super(key: key);
@@ -15,10 +22,15 @@ class _PullPageUserState extends State<PollPageUser> {
   final _formKey = GlobalKey<FormState>();
   final _chooseKey = GlobalKey<FormState>();
   final PollController _controller = PollController();
+  String _listApi = dotenv.get("API_HOST", fallback: "");
+  Map<String, dynamic> resultList= {};
+  bool isLoading = true;
+  late List<GDPData> _chartData;
 
   @override
   void initState() {
-    _controller.getPollSec();
+    getPollResult(idPoll: "1546cadf-c143-4590-a74a-eab8cf02b8da");
+    _chartData = getChartData();
     super.initState();
   }
 
@@ -50,7 +62,7 @@ class _PullPageUserState extends State<PollPageUser> {
           body: BackGround(
             background: Form(
               key: _formKey,
-              child: _controller.isValid
+              child: isLoading //_controller.isValid
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
@@ -110,10 +122,7 @@ class _PullPageUserState extends State<PollPageUser> {
                                     fontFamily: "Inter",
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                TextFormField(
+                                /*TextFormField(
                                   enableInteractiveSelection: false,
                                   focusNode: AlwaysDisabledFocusNode(),
                                   initialValue:
@@ -138,8 +147,19 @@ class _PullPageUserState extends State<PollPageUser> {
                                   ),
                                   maxLines: 6,
                                   minLines: 6,
+                                ),*/
+                                SfCircularChart(
+                                  legend: Legend(isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
+                                  series: <CircularSeries>[
+                                    PieSeries<GDPData, String>(
+                                      dataSource: _chartData,
+                                      xValueMapper: (GDPData data,_) => data.continent,
+                                      yValueMapper: (GDPData data,_) => data.gdp,
+                                      dataLabelSettings: DataLabelSettings(isVisible: true)
+                                    )
+                                  ],
                                 ),
-                                const SizedBox(
+                                /*const SizedBox(
                                   height: 30,
                                 ),
                                 Row(
@@ -178,8 +198,8 @@ class _PullPageUserState extends State<PollPageUser> {
                                       filled: true,
                                     ),
                                   ),
-                                ]),
-                                const SizedBox(
+                                ]),*/
+                               /* const SizedBox(
                                   height: 24,
                                 ),
                                 const SizedBox(
@@ -187,7 +207,7 @@ class _PullPageUserState extends State<PollPageUser> {
                                 ),
                                 const SizedBox(
                                   height: 20,
-                                )
+                                )*/
                               ],
                             ),
                           ),
@@ -235,4 +255,61 @@ class _PullPageUserState extends State<PollPageUser> {
           ),
         ),
       );
+  Future getPollResult({idPoll}) async{
+ /*   var token = {};
+    await accessToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });*/
+    var url = Uri.parse("$_listApi/poll/indicators/$idPoll");
+    var response = await http.get(
+      url,
+      headers: {
+        HttpHeaders.contentTypeHeader:'application/json',
+        //HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
+        HttpHeaders.authorizationHeader: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzOTU0Mzc4MDAwNSIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDgxMzEwNH0.xGZWeOOb5FoZDmXUPuohLWz-Sjp1DSsuxwxWdoX0nrI",
+      },
+    );
+    isLoading = false;
+    if(response.statusCode == 200){
+      Map<String, dynamic> mapResult = jsonDecode(const Utf8Decoder().convert(response.bodyBytes));
+      /*Map<String, dynamic> mapResult = {
+        "pollId": "aef5c7b4-29e8-44bc-8723-dd68b2625339",
+        "voteCount": 123,
+        "optionRanking": [
+          {
+            "id": "0fa5318e-7173-4862-ba34-4c5c9f3ecd3d",
+            "name": "sim",
+            "totalVotes": 100
+          },
+          {
+            "id": "8adede50-748b-47da-88d2-627ed45e6152",
+            "name": "não",
+            "totalVotes": 23
+          }
+        ]
+      }*/;
+      print(mapResult);
+      setState(() {
+        isLoading = false;
+        resultList = mapResult;
+      });
+    }else{
+      print(response.body);
+    }
+  }
+  List<GDPData> getChartData(){
+    final List<GDPData> chartData = [
+      GDPData(resultList['optionRanking'][0]['name'], resultList['optionRanking'][0]['totalVotes']),
+      GDPData(resultList['optionRanking'][1]['name'], resultList['optionRanking'][1]['totalVotes']),
+    ];
+    return chartData;
+  }
+}
+
+class GDPData{
+  GDPData(this.continent, this.gdp);
+  final String continent;
+  final int gdp;
 }

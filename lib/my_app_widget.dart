@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sisvoli',
       debugShowCheckedModeBanner: false,
-      //home: NewPassView(),
-     initialRoute: '/login',
+      home: PollPageUser(),
+     //initialRoute: '/login',
       routes: {
         '/login':(context) => const LoginView(),
         '/survey':(context) => const SurveyView(),
