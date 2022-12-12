@@ -12,7 +12,8 @@ import '../repositories/login_repository.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class PollPageUser extends StatefulWidget {
-  const PollPageUser({Key? key}) : super(key: key);
+  final String pollId;
+  const PollPageUser({Key? key, required this.pollId}) : super(key: key);
 
   @override
   State<PollPageUser> createState() => _PullPageUserState();
@@ -24,12 +25,14 @@ class _PullPageUserState extends State<PollPageUser> {
   final PollController _controller = PollController();
   String _listApi = dotenv.get("API_HOST", fallback: "");
   Map<String, dynamic> resultList= {};
+  //Map<String, dynamic> mapResult = {};
   bool isLoading = true;
   late List<GDPData> _chartData;
+  String? winner;
 
   @override
   void initState() {
-    getPollResult(idPoll: "1546cadf-c143-4590-a74a-eab8cf02b8da");
+    getPollResult(idPoll: widget.pollId);
     _chartData = getChartData();
     super.initState();
   }
@@ -114,53 +117,32 @@ class _PullPageUserState extends State<PollPageUser> {
                                 const SizedBox(
                                   height: 5,
                                 ),
-                                const Text(
-                                  " Total: ",
-                                  style: TextStyle(
+                                Text(
+                                  " Total: ${resultList['voteCount']}",
+                                  style: const TextStyle(
                                     color: Color.fromRGBO(38, 110, 215, 100),
                                     fontSize: 17,
                                     fontFamily: "Inter",
                                   ),
                                 ),
-                                /*TextFormField(
-                                  enableInteractiveSelection: false,
-                                  focusNode: AlwaysDisabledFocusNode(),
-                                  initialValue:
-                                      _controller.description ?? "null",
-                                  style: const TextStyle(
-                                    color: Color.fromRGBO(141, 141, 141, 100),
-                                    fontSize: 17,
-                                  ),
-                                  decoration: const InputDecoration(
-                                    fillColor:
-                                        Color.fromRGBO(255, 255, 255, 0.07),
-                                    filled: true,
-                                    contentPadding: EdgeInsets.all(20),
-                                    border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                      color: Colors.white70,
-                                    )),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                      style: BorderStyle.none,
-                                    )),
-                                  ),
-                                  maxLines: 6,
-                                  minLines: 6,
-                                ),*/
                                 SfCircularChart(
-                                  legend: Legend(isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
+                                  legend: Legend(
+                                      isVisible: true,
+                                      overflowMode: LegendItemOverflowMode.scroll,
+                                      textStyle: const TextStyle(color: Colors.white),
+                                      position: LegendPosition.bottom,
+                                  ),
                                   series: <CircularSeries>[
                                     PieSeries<GDPData, String>(
                                       dataSource: _chartData,
-                                      xValueMapper: (GDPData data,_) => data.continent,
-                                      yValueMapper: (GDPData data,_) => data.gdp,
-                                      dataLabelSettings: DataLabelSettings(isVisible: true)
+                                      xValueMapper: (GDPData data,_) => data.name,
+                                      yValueMapper: (GDPData data,_) => data.totalVotes,
+                                      dataLabelSettings: const DataLabelSettings(isVisible: true),
                                     )
                                   ],
                                 ),
-                                /*const SizedBox(
-                                  height: 30,
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height * 0.08,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -182,9 +164,11 @@ class _PullPageUserState extends State<PollPageUser> {
                                   TextFormField(
                                     enableInteractiveSelection: false,
                                     focusNode: AlwaysDisabledFocusNode(),
-                                    initialValue: "",
+                                    initialValue: "$winner",
+                                    textAlign: TextAlign.center,
+                                    //textAlignVertical: TextAlignVertical.center,
                                     style: const TextStyle(
-                                      color: Color.fromRGBO(141, 141, 141, 100),
+                                      color: Color.fromRGBO(255, 255, 255, 1),
                                       fontSize: 17,
                                     ),
                                     decoration: const InputDecoration(
@@ -198,16 +182,8 @@ class _PullPageUserState extends State<PollPageUser> {
                                       filled: true,
                                     ),
                                   ),
-                                ]),*/
-                               /* const SizedBox(
-                                  height: 24,
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                )*/
+                                ]),
+                               SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
                               ],
                             ),
                           ),
@@ -256,41 +232,24 @@ class _PullPageUserState extends State<PollPageUser> {
         ),
       );
   Future getPollResult({idPoll}) async{
- /*   var token = {};
+    var token = {};
     await accessToken().then((value) {
       setState(() {
         token = value;
       });
-    });*/
+    });
     var url = Uri.parse("$_listApi/poll/indicators/$idPoll");
     var response = await http.get(
       url,
       headers: {
         HttpHeaders.contentTypeHeader:'application/json',
-        //HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
-        HttpHeaders.authorizationHeader: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzOTU0Mzc4MDAwNSIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDgxMzEwNH0.xGZWeOOb5FoZDmXUPuohLWz-Sjp1DSsuxwxWdoX0nrI",
+        HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
+        //HttpHeaders.authorizationHeader: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzOTU0Mzc4MDAwNSIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDg1MzM0M30.jqipgBP9fVM4i-qqsXo1iIrx6vosNHOzQE1YrtJjWtI",
       },
     );
-    isLoading = false;
+    //isLoading = false;
     if(response.statusCode == 200){
       Map<String, dynamic> mapResult = jsonDecode(const Utf8Decoder().convert(response.bodyBytes));
-      /*Map<String, dynamic> mapResult = {
-        "pollId": "aef5c7b4-29e8-44bc-8723-dd68b2625339",
-        "voteCount": 123,
-        "optionRanking": [
-          {
-            "id": "0fa5318e-7173-4862-ba34-4c5c9f3ecd3d",
-            "name": "sim",
-            "totalVotes": 100
-          },
-          {
-            "id": "8adede50-748b-47da-88d2-627ed45e6152",
-            "name": "não",
-            "totalVotes": 23
-          }
-        ]
-      }*/;
-      print(mapResult);
       setState(() {
         isLoading = false;
         resultList = mapResult;
@@ -300,16 +259,33 @@ class _PullPageUserState extends State<PollPageUser> {
     }
   }
   List<GDPData> getChartData(){
-    final List<GDPData> chartData = [
-      GDPData(resultList['optionRanking'][0]['name'], resultList['optionRanking'][0]['totalVotes']),
-      GDPData(resultList['optionRanking'][1]['name'], resultList['optionRanking'][1]['totalVotes']),
-    ];
+    List<Map<String, dynamic>> result = resultList['optionRanking'];
+    print(result.length);
+    final List<GDPData> chartData = [];
+    int aux = 0;
+    for(int i = 0; i <= result.length - 1; i++){
+      setState(() {
+        if(result[i]['totalVotes'] > aux){
+          aux = result[i]['totalVotes'];
+          winner = result[i]['name'];
+        }
+        chartData.add(GDPData(result[i]['name'], result[i]['totalVotes']));
+      });
+    }
+
     return chartData;
   }
 }
 
 class GDPData{
-  GDPData(this.continent, this.gdp);
-  final String continent;
-  final int gdp;
+  GDPData(this.name, this.totalVotes);
+  final String name;
+  final int totalVotes;
 }
+/*
+class OptionRanking{
+  OptionRanking(this.id, this.name, this.totalVotes);
+  final String id;
+  final String name;
+  final int totalVotes;
+}*/
