@@ -8,8 +8,8 @@ import '../view-models/adress_page_model.dart';
 import 'package:http/http.dart' as http;
 
 class UserPollView extends StatefulWidget {
-  const UserPollView({Key? key}) : super(key: key);
-
+  final String pollId;
+  const UserPollView({Key? key, required this.pollId}) : super(key: key);
   @override
   State<UserPollView> createState() => _UserPollViewState();
 }
@@ -26,7 +26,7 @@ class _UserPollViewState extends State<UserPollView> {
 
   @override
   void initState() {
-    _controller.getPollSec();
+    _controller.getPollSec(pollId: widget.pollId);
     super.initState();
   }
 
@@ -242,18 +242,5 @@ class _UserPollViewState extends State<UserPollView> {
     } else {
       return _controller.poll.value.optionList?[index].name ?? "";
     }
-  }
-  Future getData() async{
-    var token = {};
-    await accessToken().then((value) {
-      setState(() {
-        token = value;
-      });
-    });
-    var url = Uri.parse('$_listApi/poll/list/my');
-    var response = http.get(url, headers: {
-
-    }
-    );
   }
 }

@@ -21,9 +21,9 @@ class PollController {
   String? returnMessage;
 
 
-  getPollSec() async {
+  getPollSec({pollId}) async {
     var url =
-        Uri.parse("$_listApi/poll/list/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
+        Uri.parse("$_listApi/poll/list/$pollId");
     var token = {};
     await accessToken().then((value) {
       token = value;
