@@ -26,10 +26,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mailController = TextEditingController();
   final TextEditingController _cpfController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +63,27 @@ class _RegisterPageState extends State<RegisterPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          child: Text(
-                            'Registrar',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                setState(() {});
+                              },
+                              icon: const Icon(
+                                  Icons.arrow_back_ios_new_outlined,
+                                  color: Colors.white),
                             ),
-                          ),
+                            const Text(
+                              'Registrar',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
@@ -170,7 +179,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               setState(() {
                                 _dateController.text =
                                     DateFormat('dd/MM/yyyy').format(pickeddate);
-                                _date = DateFormat('yyyy-MM-dd').format(pickeddate);
+                                _date =
+                                    DateFormat('yyyy-MM-dd').format(pickeddate);
                               });
                             }
                           },
@@ -400,30 +410,40 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 48,
                       width: MediaQuery.of(context).size.width * 0.87,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           var formValid =
                               _formKey.currentState?.validate() ?? false;
                           if (RegisterPageModel().selectedIcon(sex)) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(RegisterPageModel().snackBarGender);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                RegisterPageModel().snackBarGender);
                           } else if (formValid) {
-                            userRegister(
-                                _nameController.text,
-                                sex,
-                                _mailController.text,
-                                _password,
-                                _cpfController.text,
-                                _date,
-                                _usernameController.text);
-                            if(UserRegister().statusCode == 200) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(RegisterPageModel().snackBarSucess);
-                            } else if (UserRegister().statusCode == 500) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(RegisterPageModel().snackBarDeny);
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(RegisterPageModel().snackBarNotWaited);
+                            try {
+                              String message = await UserRegister()
+                                  .userRegister(
+                                      _nameController.text,
+                                      sex,
+                                      _mailController.text,
+                                      _password,
+                                      _cpfController.text,
+                                      _date,
+                                      _usernameController.text);
+
+                                if (await message == "PS-0000") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      RegisterPageModel().snackBarSucess);
+                                  Navigator.pushNamed(context, '/login');
+                                } else if (message == "PS-0016") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      RegisterPageModel().snackBarDeny);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      RegisterPageModel().snackBarNotWaited);
+                                }
+
+                            } catch (_) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  RegisterPageModel().snackBarNotWaited);
+                                  Navigator.pop;
                             }
                           }
                         },

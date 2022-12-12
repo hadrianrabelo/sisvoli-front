@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:urnavotos/models/options_model.dart';
 import '../models/poll_model.dart';
 import '../models/poll_result_model.dart';
 import 'login_repository.dart';
@@ -110,8 +111,6 @@ class VoteController {
   DateTime dateTimeSecond = DateTime(2022, 02, 02, 12, 00);
   List<dynamic> list = [];
   String? description;
-  late final _token =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDI4MDEyOX0.MN8WtAqVqR47-7P1TLPfM8Nt6zwrcnGWkiJ_GVtg6qM";
   String? returnMessage;
 
   getPollSec() async {
@@ -198,7 +197,6 @@ class VoteController {
 ////////////////////////////////////////////////////
 class PollResultController {
 
-  late final _token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTc0MzQwNDA5NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovLzI2LjEzMi4xMjAuNjI6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDI4NzE1MX0.YuXcjkLwcyUBDlZJgTG8mH00Mu9lQWSILAq0HGlPQu0";
   bool isValid = true;
   late PollResultModel pollResult;
 
@@ -225,12 +223,9 @@ class PollResultController {
 }
 
 ///////////////////////CREATING PAGE/////////////////////////
-class CreatingController {
-  var statusCode = 0;
+class CreatingPollController {
 
-
-
-  createPoll(title, description, startDate, endDate) async {
+  Future<List<String>> createPoll(title, description, startDate, endDate) async {
     Map<String, String> body = {
       "title": "$title",
       "description": "$description",
@@ -252,13 +247,34 @@ class CreatingController {
       body: jsonEncode(body),
     );
 
-    if(response.statusCode == 200) {
-      CreatingController().statusCode = response.statusCode;
-    } else if (response.statusCode != 200) {
-      CreatingController().statusCode = response.statusCode;
+    PollModel createpoll = PollModel.fromJson(jsonDecode(response.body));
+
+    if (response.statusCode == 201) {
+      return ["PS-0000", createpoll.id!];
+    } else {
+      return ["not allowed"];
     }
   }
 
+   createPollOptions(name, pollId) async {
+    Map<String, dynamic> body = {
+      "name": "$name",
+      "pollId": "$pollId"
+    };
 
+    var url = Uri.parse("$_listApi/option/new");
+    var token = {};
+    await accessToken().then((value) {
+      token = value;
+    });
+    var response = await http.post(
+      url,
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
+      },
+      body: jsonEncode(body),
+    );
+  }
 }
 

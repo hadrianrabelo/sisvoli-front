@@ -37,8 +37,10 @@ class PollModel {
     endDate = json['endDate'] as String;
     status = json['status'] as String;
     userOwnerId = json['userOwnerId'] as String;
-    optionList = (json['optionList'] as Iterable<dynamic>).map((e) => OptionsModel.fromJson(e)).toList();
+    optionList == null ? null : (json['optionList'] as Iterable<dynamic>).map((e) => OptionsModel.fromJson(e)).toList();
   }
+
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

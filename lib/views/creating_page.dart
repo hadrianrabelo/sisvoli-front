@@ -21,6 +21,7 @@ class _RegisterPageState extends State<CreatingPage> {
   DateTime dateTimeSecond = DateTime(2022, 02, 02, 12, 00);
   DateTime compareDate = DateTime(2022, 02, 02, 12, 00);
   List listChooses = [null];
+  List listResult = [null];
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -42,10 +43,10 @@ class _RegisterPageState extends State<CreatingPage> {
             ),
           ),
           leading: IconButton(
-            onPressed: (){
+            onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
+            icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
           ),
         ),
         body: BackGround(
@@ -480,15 +481,13 @@ class _RegisterPageState extends State<CreatingPage> {
                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       var chooseValid =
                           _chooseKey.currentState?.validate() ?? false;
                       var formValid =
                           _formKey.currentState?.validate() ?? false;
-
                       if (dateTime == compareDate ||
-                              dateTimeSecond == compareDate)
-                           {
+                          dateTimeSecond == compareDate) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             CreatingPageModel().snackBarText(
                                 "Selecione as datas e horas corretamente"));
@@ -497,26 +496,44 @@ class _RegisterPageState extends State<CreatingPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                             CreatingPageModel().snackBarText(
                                 "A data e hora selecionada é invalida"));
-                      }else if (formValid & chooseValid) {
-                        CreatingController().createPoll(_titleController.text, _descriptionController.text,
-                            dateTime.toIso8601String(), dateTimeSecond.toIso8601String());
-                        print("esse é antes ${CreatingController().statusCode}");
-                        if (CreatingController().statusCode == 201) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              CreatingPageModel().snackBarText(
-                                  "Tudo Certo"));
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              CreatingPageModel().snackBarText(
-                                  "Tente novamente"));
-                          print(CreatingController().statusCode);
-                        }
-                      } else {
+                      } else if (dateTime.isAtSameMomentAs(dateTimeSecond)) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          CreatingPageModel().snackBarText(
-                              "Preencha as opções corretamente"));}
+                            CreatingPageModel()
+                                .snackBarText("As datas não podem ser iguais"));
+                      } else if (formValid & chooseValid) {
+                        try {
+                          List<String> message = await CreatingPollController()
+                              .createPoll(
+                              _titleController.text,
+                              _descriptionController.text,
+                              dateTime.toIso8601String(),
+                              dateTimeSecond.toIso8601String());
 
-                    },// adicionar Navigator.pop(context); e uma snack bar dizendo que a criacao da enquete foi sucesso
+                          for (dynamic element in listChooses) {
+                            print(element);
+                            print(message[1]);
+                            await CreatingPollController().createPollOptions(
+                                element, message[1]);
+                          }
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "Enquete foi criada com sucesso"),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        } catch (_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "Erro inesperado, tente novamente mais tarde"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(
                           Color.fromRGBO(38, 110, 215, 1.0)),

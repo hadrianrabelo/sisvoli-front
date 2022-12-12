@@ -30,7 +30,7 @@ class RegisterPageModel {
   String? validPassword(pass, {secondPass}) {
     if (pass == null || pass.isEmpty) {
       return "Senha obrigatória.";
-    } else if (pass.length < 9) {
+    } else if (pass.length < 8) {
       return "A senha deve conter no mínimo 8 caracteres.";
     } else if (pass != secondPass) {
       return "As senhas devem ser iguais";
@@ -67,7 +67,7 @@ class RegisterPageModel {
   );
 
   SnackBar snackBarDeny = const SnackBar(
-    content: Text("Reveja os campos anteriores"),
+    content: Text("Dados já existentes"),
     backgroundColor: Colors.red,
   );
 
