@@ -20,6 +20,7 @@ class _EditingPollPageState extends State<EditingPollPage> {
   final EditingPollController _controller = EditingPollController();
   late int length = _controller.poll.value.optionList!.length;
   late String message;
+  bool notChangedOpt = false;
   List<dynamic> compareList = [];
 
   @override
@@ -159,7 +160,8 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                     onChanged: (text) {
                                       _controller.description = text;
                                     },
-                                    initialValue: _controller.description,
+                                    initialValue:
+                                        _controller.poll.value.description,
                                     validator: (String? value) {
                                       if (EditingPollPageModel()
                                               .validAndLength(value) ==
@@ -288,8 +290,6 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                                           .snackBarText(
                                                               "Mínimo de duas opções"));
                                             } else {
-                                              _controller.compareList
-                                                  .removeLast();
                                               length--;
                                               if (_controller.list.length >
                                                   length) {
@@ -583,38 +583,99 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                     "As datas de inicio e fim devem ser diferentes"));
                           } */
                           if (formValid & chooseValid) {
-                            message = await _controller.sendPollData(
-                                "${_controller.poll.value.title}",
-                                "${_controller.description}",
-                                "${_controller.poll.value.startDate}",
-                                "${_controller.poll.value.endDate}",
-                                widget.pollId);
-                            print("esse eh o $message");
-                            if (_controller.list != _controller.compareList) {
+                            print(_controller.list);
+                            print(_controller.compareList);
+                            List<String> difference = (_controller.compareList
+                                .toSet()
+                                .difference(_controller.list.toSet())
+                                .toList());
+                            difference.addAll(_controller.list
+                                .toSet()
+                                .difference(_controller.compareList.toSet())
+                                .toList());
+                            if (difference.isNotEmpty) {
                               await _controller.creatingOptions(
                                   _controller.list, widget.pollId);
+                            } else {
+                              notChangedOpt = true;
                             }
-                          }
 
-                          if (await message == "ok") {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(
-                                  const SnackBar(
-                                    duration: Duration(seconds: 1),
-                                    content: Text("Alterações realizadas"),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                )
-                                .closed
-                                .whenComplete(
-                                    () => Navigator.of(context).pop());
-                          } else {
-                            await ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("erro tente novamente"),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
+                            if (_controller.description !=
+                                _controller.poll.value.description) {
+                              message = await _controller.sendPollData(
+                                  "${_controller.poll.value.title}",
+                                  "${_controller.description}",
+                                  "${_controller.poll.value.startDate}",
+                                  "${_controller.poll.value.endDate}",
+                                  widget.pollId);
+                            } else {
+                              message = "PS-0002";
+                            }
+
+                            print(message);
+                            print(notChangedOpt);
+                            if (await message == "PS-0002" &&
+                                notChangedOpt == true) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 1),
+                                      content: Text("sem alterações"),
+                                      backgroundColor: Colors.grey,
+                                    ),
+                                  )
+                                  .closed
+                                  .whenComplete(
+                                      () => Navigator.of(context).pop());
+                            } else if (message == "ok" && notChangedOpt == false) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 1),
+                                  content: Text(
+                                      "Todas as alterações foram realizadas"),
+                                  backgroundColor: Colors.green,
+                                ),
+                              )
+                                  .closed
+                                  .whenComplete(
+                                      () => Navigator.of(context).pop());
+                            } else if ((message == "ok") &&
+                                (notChangedOpt == false)) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 1),
+                                      content: Text(
+                                          "Descrição alterada com sucesso"),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  )
+                                  .closed
+                                  .whenComplete(
+                                      () => Navigator.of(context).pop());
+                            } else if ((message == "PS-0002") &&
+                                (notChangedOpt == false)) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 1),
+                                      content:
+                                          Text("Opções alteradas com sucesso"),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  )
+                                  .closed
+                                  .whenComplete(
+                                      () => Navigator.of(context).pop());
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("erro tente novamente"),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
                           }
                         }
                       },

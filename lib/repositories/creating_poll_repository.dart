@@ -50,21 +50,15 @@ class EditingPollController {
 
   Future<String> sendPollData(
       title, description, startDate, endDate, pollId) async {
-    String? newTitle = title;
-    String? newDescription = description;
-    String? newStartTime = startDate;
-    String? newEndDate = endDate;
-
-    print(newDescription);
-    print(poll.value.description);
       
       Map<String, dynamic> body = {
-        "title": "$newTitle",
-        "description": "$newDescription",
-        "startDate": "$newStartTime",
-        "endDate": "$newEndDate"
+        "title": "$title",
+        "description": "$description",
+        "startDate": "$startDate",
+        "endDate": "$endDate"
       };
       print(body.values);
+      print(body.keys);
       var url = Uri.parse("$_listApi/poll/put/$pollId");
       var token = {};
       await accessToken().then((value) {
@@ -78,7 +72,7 @@ class EditingPollController {
           body: jsonEncode(body));
       
       switch (response.statusCode) {
-        case 201: 
+        case 204:
           return "ok";
         
         default: 
