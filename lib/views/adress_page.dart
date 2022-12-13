@@ -401,7 +401,7 @@ class _AdressPageState extends State<AdressPage> {
                             if(value == 200){
                               print("Deu Certo");
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(backgroundColor: Colors.redAccent,
+                                  const SnackBar(backgroundColor: Colors.green,
                                     content: Text('Informações salvas com sucesso!'),
                                     behavior: SnackBarBehavior.floating,
                                   )
@@ -431,7 +431,7 @@ class _AdressPageState extends State<AdressPage> {
                             if(value == 200){
                               print("Deu Certo");
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(backgroundColor: Colors.redAccent,
+                                  const SnackBar(backgroundColor: Colors.green,
                                     content: Text('Informações salvas com sucesso!'),
                                     behavior: SnackBarBehavior.floating,
                                   )
@@ -514,7 +514,7 @@ class _AdressPageState extends State<AdressPage> {
     }
     return response.statusCode;
   }
-  Future editAddress({zipCode,number,street,district,complement,cityId}) async{
+  Future<int> editAddress({zipCode,number,street,district,complement,cityId}) async{
     var token = {};
     await accessToken().then((value) {
       setState(() {
@@ -554,12 +554,13 @@ class _AdressPageState extends State<AdressPage> {
       print("cityId: ${bodyContent["cityId"]}");
       bodyContent.remove("cityId");
     }
-    var response = http.put(url,headers:{
+    var response = await http.put(url,headers:{
       HttpHeaders.contentTypeHeader:'application/json',
       HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
     } ,body:jsonEncode(bodyContent));
+    return response.statusCode;
   }
-  Future registerAddress({zipCode,number,street,district,complement,cityId}) async{
+  Future<int> registerAddress({zipCode,number,street,district,complement,cityId}) async{
     var url = Uri.parse('$_listApi/address/');
     var token = {};
     await accessToken().then((value) {
@@ -575,13 +576,14 @@ class _AdressPageState extends State<AdressPage> {
       "complement": complement, // complemento
       "cityId": cityId // bairro
     };
-    var response = http.post(url,
+    var response = await http.post(url,
         headers: {
       HttpHeaders.contentTypeHeader:'application/json',
       HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
     },
         body: jsonEncode(bodyContent)
     );
+    return response.statusCode;
   }
   Future getStateList() async{
     //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjc0OTkwfQ.9NKf88Ypds7cWD5m_QckFXG_wsv2Fo5ithIGGH_SQAY';

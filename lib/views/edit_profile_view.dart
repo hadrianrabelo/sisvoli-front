@@ -375,7 +375,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         setState(() {
                           if(value == 200){
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(backgroundColor: Colors.redAccent,
+                                const SnackBar(backgroundColor: Colors.green,
                                   content: Text('Informações salvas com sucesso!'),
                                   behavior: SnackBarBehavior.floating,
                                 )
