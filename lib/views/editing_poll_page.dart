@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:urnavotos/repositories/creating_poll_repository.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import '../view-models/editing_poll_page_model.dart';
 
 class EditingPollPage extends StatefulWidget {
   final String pollId;
+
   const EditingPollPage({Key? key, required this.pollId}) : super(key: key);
 
   @override
@@ -18,7 +20,7 @@ class _EditingPollPageState extends State<EditingPollPage> {
   final EditingPollController _controller = EditingPollController();
   late int length = _controller.poll.value.optionList!.length;
   late String message;
-  List<dynamic>listOptChanges = [];
+  List<dynamic> compareList = [];
 
   @override
   void initState() {
@@ -29,8 +31,7 @@ class _EditingPollPageState extends State<EditingPollPage> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
         },
@@ -59,320 +60,322 @@ class _EditingPollPageState extends State<EditingPollPage> {
               key: _formKey,
               child: _controller.isValid
                   ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Carregando...',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                ],
-              )
-                  : Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: const BoxDecoration(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(8.0)),
-                          color: Color.fromRGBO(255, 255, 255, 0.07),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Center(
+                          child: CircularProgressIndicator(),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Carregando...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: SingleChildScrollView(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(
-                              height: 9,
-                            ),
-                            Row(children: const [
-                              Text(
-                                " O título da enquete é:",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontFamily: "Inter",
-                                ),
+                            Container(
+                              padding: const EdgeInsets.all(15.0),
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
+                                color: Color.fromRGBO(255, 255, 255, 0.07),
                               ),
-                              SizedBox(
-                                width: 100,
-                              ),
-                              Text(
-                                " não editável",
-                                style: TextStyle(
-                                  color: Colors.white24,
-                                  fontSize: 13,
-                                  fontFamily: "Inter",
-                                ),
-                              ),
-                            ]),
-                            const SizedBox(
-                              height: 9,
-                            ),
-                            TextFormField(
-                              initialValue: _controller.poll.value.title,
-                              enableInteractiveSelection: false,
-                              focusNode: AlwaysDisabledFocusNode(),
-                              style: const TextStyle(
-                                color: Colors.grey,
-                              ),
-                              decoration: const InputDecoration(
-                                fillColor:
-                                Color.fromRGBO(255, 255, 255, 0.07),
-                                filled: true,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(8.0)),
-                                ),
-                                disabledBorder: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Text(
-                              " Digite a descrição da enquete:",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontFamily: "Inter",
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 9,
-                            ),
-                            TextFormField(
-                              onChanged: (text) {
-                                _controller.description = text;
-                              },
-                              initialValue: _controller.description,
-                              validator: (String? value) {
-                                if (EditingPollPageModel()
-                                    .validAndLength(value) ==
-                                    '1') {
-                                  return "Descrição Obrigatória";
-                                } else if (EditingPollPageModel()
-                                    .validAndLength(value) ==
-                                    '2') {
-                                  return "No mínimo 8 caracteres";
-                                }
-                                return null;
-                              },
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                              decoration: const InputDecoration(
-                                fillColor:
-                                Color.fromRGBO(255, 255, 255, 0.07),
-                                filled: true,
-                                contentPadding: EdgeInsets.all(20),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.white60,
-                                    )),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      style: BorderStyle.none,
-                                    )),
-                              ),
-                              maxLines: 5,
-                              minLines: 5,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Text(
-                              " Opções de escolha:",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontFamily: "Inter",
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 9,
-                            ),
-                            Column(
-                              children: [
-                                Form(
-                                    key: _chooseKey,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: const ScrollPhysics(),
-                                        itemCount: length,
-                                        itemBuilder:
-                                            (BuildContext context,
-                                            int index) {
-                                          return Column(children: [
-                                            TextFormField(
-                                              initialValue:
-                                              initialValue(index),
-                                              validator: (String? value) {
-                                                if (EditingPollPageModel()
-                                                    .chooseValid(value)) {
-                                                  return "preenchimento obrigatório";
-                                                }
-                                                return null;
-                                              },
-                                              onChanged: (text) {
-                                                if (index >=
-                                                    _controller
-                                                        .list.length) {
-                                                  _controller.list
-                                                      .add(text);
-                                                } else {
-                                                  _controller
-                                                      .list[index] = text;
-                                                }
-                                              },
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                              decoration: InputDecoration(
-                                                hintText:
-                                                "Opção ${index + 1}",
-                                                hintStyle:
-                                                const TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: "Inter",
-                                                  fontSize: 12,
-                                                ),
-                                                border:
-                                                const OutlineInputBorder(
-                                                  borderRadius:
-                                                  BorderRadius.all(
-                                                      Radius.circular(
-                                                          8.0)),
-                                                ),
-                                                disabledBorder:
-                                                const OutlineInputBorder(),
-                                                fillColor:
-                                                const Color.fromRGBO(
-                                                    255,
-                                                    255,
-                                                    255,
-                                                    0.07),
-                                                filled: true,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 12,
-                                            ),
-                                          ]);
-                                        })),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                      if (length <= 2) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                            EditingPollPageModel()
-                                                .snackBarText(
-                                                "Mínimo de duas opções"));
-                                      } else {
-                                        length--;
-                                        if (_controller.list.length >
-                                            length) {
-                                          _controller.list.removeLast();
-                                        }
-                                        setState(
-                                              () {},
-                                        );
-                                      }
-                                    },
-                                    style: const ButtonStyle(
-                                      backgroundColor:
-                                      MaterialStatePropertyAll(
-                                          Colors.redAccent),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    height: 9,
+                                  ),
+                                  Row(children: const [
+                                    Text(
+                                      " O título da enquete é:",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontFamily: "Inter",
+                                      ),
                                     ),
-                                    child: const Icon(Icons.remove)),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    var chooseValid = _chooseKey
-                                        .currentState
-                                        ?.validate() ??
-                                        false;
-                                    if (chooseValid) {
-                                      length++;
-                                      setState(
-                                            () {},
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(EditingPollPageModel()
-                                          .snackBarText(
-                                          "Preencha as opções vazias"));
-                                    }
-                                  },
-                                  child: const Icon(Icons.add),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                SizedBox(
-                                  width: 60,
-                                ),
-                                Text(
-                                  "Data de ínicio:",
-                                  style: TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 15,
+                                    SizedBox(
+                                      width: 100,
+                                    ),
+                                    Text(
+                                      " não editável",
+                                      style: TextStyle(
+                                        color: Colors.white24,
+                                        fontSize: 13,
+                                        fontFamily: "Inter",
+                                      ),
+                                    ),
+                                  ]),
+                                  const SizedBox(
+                                    height: 9,
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 50,
-                                ),
-                                Text(
-                                  "Hora de ínicio:",
-                                  style: TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 15,
+                                  TextFormField(
+                                    initialValue: _controller.poll.value.title,
+                                    enableInteractiveSelection: false,
+                                    focusNode: AlwaysDisabledFocusNode(),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                    decoration: const InputDecoration(
+                                      fillColor:
+                                          Color.fromRGBO(255, 255, 255, 0.07),
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8.0)),
+                                      ),
+                                      disabledBorder: OutlineInputBorder(),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  width: 60,
-                                ),
-                                ElevatedButton(
-                                    style: const ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStatePropertyAll(
-                                            Color.fromRGBO(255, 255,
-                                                255, 0.14))),
-                                    onPressed: () async {
-                                      /*
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  const Text(
+                                    " Digite a descrição da enquete:",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontFamily: "Inter",
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 9,
+                                  ),
+                                  TextFormField(
+                                    onChanged: (text) {
+                                      _controller.description = text;
+                                    },
+                                    initialValue: _controller.description,
+                                    validator: (String? value) {
+                                      if (EditingPollPageModel()
+                                              .validAndLength(value) ==
+                                          '1') {
+                                        return "Descrição Obrigatória";
+                                      } else if (EditingPollPageModel()
+                                              .validAndLength(value) ==
+                                          '2') {
+                                        return "No mínimo 8 caracteres";
+                                      }
+                                      return null;
+                                    },
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                    decoration: const InputDecoration(
+                                      fillColor:
+                                          Color.fromRGBO(255, 255, 255, 0.07),
+                                      filled: true,
+                                      contentPadding: EdgeInsets.all(20),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                        color: Colors.white60,
+                                      )),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                        style: BorderStyle.none,
+                                      )),
+                                    ),
+                                    maxLines: 5,
+                                    minLines: 5,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  const Text(
+                                    " Opções de escolha:",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontFamily: "Inter",
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 9,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Form(
+                                          key: _chooseKey,
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: const ScrollPhysics(),
+                                              itemCount: length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return Column(children: [
+                                                  TextFormField(
+                                                    initialValue:
+                                                        initialValue(index),
+                                                    validator: (String? value) {
+                                                      if (EditingPollPageModel()
+                                                          .chooseValid(value)) {
+                                                        return "preenchimento obrigatório";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    onChanged: (text) {
+                                                      if (index >=
+                                                          _controller
+                                                              .list.length) {
+                                                        _controller.list
+                                                            .add(text);
+                                                      } else {
+                                                        _controller
+                                                            .list[index] = text;
+                                                      }
+                                                    },
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                    decoration: InputDecoration(
+                                                      hintText:
+                                                          "Opção ${index + 1}",
+                                                      hintStyle:
+                                                          const TextStyle(
+                                                        color: Colors.white,
+                                                        fontFamily: "Inter",
+                                                        fontSize: 12,
+                                                      ),
+                                                      border:
+                                                          const OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8.0)),
+                                                      ),
+                                                      disabledBorder:
+                                                          const OutlineInputBorder(),
+                                                      fillColor:
+                                                          const Color.fromRGBO(
+                                                              255,
+                                                              255,
+                                                              255,
+                                                              0.07),
+                                                      filled: true,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 12,
+                                                  ),
+                                                ]);
+                                              })),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            if (length <= 2) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                      EditingPollPageModel()
+                                                          .snackBarText(
+                                                              "Mínimo de duas opções"));
+                                            } else {
+                                              _controller.compareList
+                                                  .removeLast();
+                                              length--;
+                                              if (_controller.list.length >
+                                                  length) {
+                                                _controller.list.removeLast();
+                                              }
+                                              setState(
+                                                () {},
+                                              );
+                                            }
+                                          },
+                                          style: const ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStatePropertyAll(
+                                                    Colors.redAccent),
+                                          ),
+                                          child: const Icon(Icons.remove)),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          var chooseValid = _chooseKey
+                                                  .currentState
+                                                  ?.validate() ??
+                                              false;
+                                          if (chooseValid) {
+                                            length++;
+                                            setState(
+                                              () {},
+                                            );
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(EditingPollPageModel()
+                                                    .snackBarText(
+                                                        "Preencha as opções vazias"));
+                                          }
+                                        },
+                                        child: const Icon(Icons.add),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 24,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      SizedBox(
+                                        width: 60,
+                                      ),
+                                      Text(
+                                        "Data de ínicio:",
+                                        style: TextStyle(
+                                          color: Colors.white38,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 50,
+                                      ),
+                                      Text(
+                                        "Hora de ínicio:",
+                                        style: TextStyle(
+                                          color: Colors.white38,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        width: 60,
+                                      ),
+                                      ElevatedButton(
+                                          style: const ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStatePropertyAll(
+                                                      Color.fromRGBO(255, 255,
+                                                          255, 0.14))),
+                                          onPressed: () async {
+                                            /*
                                             FocusScope.of(context).unfocus();
                                             final date = await pickDate();
                                             if (date == null) return;
@@ -386,25 +389,25 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                               _controller.dateTime = newDateTime;
                                             });
                                              */
-                                    },
-                                    child: Text(
-                                      DateFormat("dd/MM/yyyy")
-                                          .format(_controller.dateTime),
-                                      style: const TextStyle(
-                                          color: Colors.white38),
-                                    )),
-                                const SizedBox(
-                                  width: 38,
-                                ),
-                                ElevatedButton(
-                                  style: const ButtonStyle(
-                                      backgroundColor:
-                                      MaterialStatePropertyAll(
-                                          Color.fromRGBO(
-                                              255, 255, 255, 0.14))),
-                                  onPressed: () async {
-                                    FocusScope.of(context).unfocus();
-                                    /*
+                                          },
+                                          child: Text(
+                                            DateFormat("dd/MM/yyyy")
+                                                .format(_controller.dateTime),
+                                            style: const TextStyle(
+                                                color: Colors.white38),
+                                          )),
+                                      const SizedBox(
+                                        width: 38,
+                                      ),
+                                      ElevatedButton(
+                                        style: const ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStatePropertyAll(
+                                                    Color.fromRGBO(
+                                                        255, 255, 255, 0.14))),
+                                        onPressed: () async {
+                                          FocusScope.of(context).unfocus();
+                                          /*
                                             final time = await pickTime();
                                             if (time == null) return;
                                             final newDateTime = DateTime(
@@ -418,63 +421,63 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                               _controller.dateTime = newDateTime;
                                             });
                                              */
-                                  },
-                                  child: Text(
-                                    DateFormat("HH:mm")
-                                        .format(_controller.dateTime),
-                                    style: const TextStyle(
-                                        color: Colors.white38),
+                                        },
+                                        child: Text(
+                                          DateFormat("HH:mm")
+                                              .format(_controller.dateTime),
+                                          style: const TextStyle(
+                                              color: Colors.white38),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                SizedBox(
-                                  width: 60,
-                                ),
-                                Text(
-                                  "Data do fim:",
-                                  style: TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 15,
+                                  const SizedBox(
+                                    height: 10,
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 64,
-                                ),
-                                Text(
-                                  "Hora do fim:",
-                                  style: TextStyle(
-                                    color: Colors.white38,
-                                    fontSize: 15,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      SizedBox(
+                                        width: 60,
+                                      ),
+                                      Text(
+                                        "Data do fim:",
+                                        style: TextStyle(
+                                          color: Colors.white38,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 64,
+                                      ),
+                                      Text(
+                                        "Hora do fim:",
+                                        style: TextStyle(
+                                          color: Colors.white38,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  width: 60,
-                                ),
-                                ElevatedButton(
-                                    style: const ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStatePropertyAll(
-                                            Color.fromRGBO(255, 255,
-                                                255, 0.14))),
-                                    onPressed: () async {
-                                      FocusScope.of(context).unfocus();
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        width: 60,
+                                      ),
+                                      ElevatedButton(
+                                          style: const ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStatePropertyAll(
+                                                      Color.fromRGBO(255, 255,
+                                                          255, 0.14))),
+                                          onPressed: () async {
+                                            FocusScope.of(context).unfocus();
 
-                                      /*
+                                            /*
                                             final dateSecond =
                                                 await pickDateTwo();
                                             if (dateSecond == null) return;
@@ -490,25 +493,25 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                                   newDateTimeSecond;
                                             });
                                              */
-                                    },
-                                    child: Text(
-                                      DateFormat("dd/MM/yyyy").format(
-                                          _controller.dateTimeSecond),
-                                      style: const TextStyle(
-                                          color: Colors.white38),
-                                    )),
-                                const SizedBox(
-                                  width: 38,
-                                ),
-                                ElevatedButton(
-                                    style: const ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStatePropertyAll(
-                                            Color.fromRGBO(255, 255,
-                                                255, 0.14))),
-                                    onPressed: () async {
-                                      FocusScope.of(context).unfocus();
-                                      /* final timeSecond =
+                                          },
+                                          child: Text(
+                                            DateFormat("dd/MM/yyyy").format(
+                                                _controller.dateTimeSecond),
+                                            style: const TextStyle(
+                                                color: Colors.white38),
+                                          )),
+                                      const SizedBox(
+                                        width: 38,
+                                      ),
+                                      ElevatedButton(
+                                          style: const ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStatePropertyAll(
+                                                      Color.fromRGBO(255, 255,
+                                                          255, 0.14))),
+                                          onPressed: () async {
+                                            FocusScope.of(context).unfocus();
+                                            /* final timeSecond =
                                                 await pickTimeTwo();
                                             if (timeSecond == null) return;
                                             final newDateTimeSecond = DateTime(
@@ -522,25 +525,25 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                                   newDateTimeSecond;
                                             });
                                              */
-                                    },
-                                    child: Text(
-                                      DateFormat("HH:mm").format(
-                                          _controller.dateTimeSecond),
-                                      style: const TextStyle(
-                                          color: Colors.white38),
-                                    )),
-                              ],
+                                          },
+                                          child: Text(
+                                            DateFormat("HH:mm").format(
+                                                _controller.dateTimeSecond),
+                                            style: const TextStyle(
+                                                color: Colors.white38),
+                                          )),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  )
+                                ],
+                              ),
                             ),
-                            const SizedBox(
-                              height: 20,
-                            )
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
+                    ),
             ),
           ),
           bottomNavigationBar: BottomAppBar(
@@ -552,10 +555,7 @@ class _EditingPollPageState extends State<EditingPollPage> {
                 children: [
                   Container(
                     height: 48,
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.87,
+                    width: MediaQuery.of(context).size.width * 0.87,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     ),
@@ -583,62 +583,41 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                     "As datas de inicio e fim devem ser diferentes"));
                           } */
                           if (formValid & chooseValid) {
-                            print("teste ${_controller.description}");
                             message = await _controller.sendPollData(
-                                "${_controller.poll.value.title}", "${_controller.description}",
+                                "${_controller.poll.value.title}",
+                                "${_controller.description}",
                                 "${_controller.poll.value.startDate}",
-                                "${_controller.poll.value.endDate}", widget.pollId);
+                                "${_controller.poll.value.endDate}",
+                                widget.pollId);
+                            print("esse eh o $message");
+                            if (_controller.list != _controller.compareList) {
+                              await _controller.creatingOptions(
+                                  _controller.list, widget.pollId);
+                            }
+                          }
 
-                            List<dynamic> diference = _controller.list.toSet().difference(_controller.compareList.toSet()).toList();
-                            if (diference.isNotEmpty){
-                              for(int a = 0; length > a; a++) {
-                                if(_controller.list[a] != _controller.compareList[a]) {
-                                  await _controller.deletingOption(_controller.poll.value.optionList![a].id);
-                                  await _controller.creatingOption(_controller.list[a], _controller.poll.value.id);
-                                }
-                              }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  duration: Duration(seconds: 1),
-                                  content: Text(
-                                      "Alterações salvas com sucesso"),
-                                  backgroundColor: Colors.green,
-                                ),
-                              ).closed.whenComplete(() => Navigator.pop(context));
-                            } else {
-                              if(await message == "PS-0001") {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                          if (await message == "ok") {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(
                                   const SnackBar(
                                     duration: Duration(seconds: 1),
-                                    content: Text(
-                                        "Sem alterações"),
-                                    backgroundColor: Colors.grey,
-                                  ),
-                                ).closed.whenComplete(() => Navigator.of(context).pop());
-                              }
-                              else if (await message == "PS-0000") {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    duration: Duration(seconds: 1),
-                                    content: Text(
-                                        "Alterações realizadas"),
+                                    content: Text("Alterações realizadas"),
                                     backgroundColor: Colors.green,
                                   ),
-                                ).closed.whenComplete(() => Navigator.of(context).pop());
-                              } else{
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        "Erro, tente novamente"),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                              }
-                            }
-
-                            }
-                            }
-                          },
+                                )
+                                .closed
+                                .whenComplete(
+                                    () => Navigator.of(context).pop());
+                          } else {
+                            await ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("erro tente novamente"),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      },
                       style: const ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(
                             Color.fromRGBO(38, 110, 215, 1.0)),

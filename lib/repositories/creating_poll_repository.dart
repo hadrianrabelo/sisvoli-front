@@ -17,8 +17,8 @@ class EditingPollController {
   bool isValid = true;
   DateTime dateTime = DateTime(2022, 02, 02, 12, 00);
   DateTime dateTimeSecond = DateTime(2022, 02, 02, 12, 00);
-  List<dynamic> list = [];
-  List<dynamic> compareList = [];
+  List<String> list = [];
+  List<String> compareList = [];
   String? description;
 
   getPollSec(pollId) async {
@@ -39,17 +39,17 @@ class EditingPollController {
           DateFormat("yyyy-MM-ddThh:mm:ss").parse(poll.value.endDate!);
       description = poll.value.description;
       for (int a = 0; poll.value.optionList!.length > a; a++) {
-        list.insert(a, poll.value.optionList![a].name);
-        compareList.insert(a, poll.value.optionList![a].name);
+        list.insert(a, poll.value.optionList![a].name!);
+        compareList.insert(a, poll.value.optionList![a].name!);
       }
 
       isValid = false;
     }
-    if (response.statusCode != 200) {
-    }
+    if (response.statusCode != 200) {}
   }
 
-  Future <String>sendPollData(title, description, startDate, endDate, pollId) async {
+  Future<String> sendPollData(
+      title, description, startDate, endDate, pollId) async {
     String? newTitle = title;
     String? newDescription = description;
     String? newStartTime = startDate;
@@ -57,15 +57,7 @@ class EditingPollController {
 
     print(newDescription);
     print(poll.value.description);
-
-    if (newTitle == poll.value.title &&
-        newDescription == poll.value.description &&
-        newStartTime == poll.value.startDate &&
-        newEndDate == poll.value.endDate) {
-
-      return "PS-0001";
-
-    } else {
+      
       Map<String, dynamic> body = {
         "title": "$newTitle",
         "description": "$newDescription",
@@ -73,8 +65,7 @@ class EditingPollController {
         "endDate": "$newEndDate"
       };
       print(body.values);
-      var url =
-          Uri.parse("$_listApi/poll/put/$pollId");
+      var url = Uri.parse("$_listApi/poll/put/$pollId");
       var token = {};
       await accessToken().then((value) {
         token = value;
@@ -85,49 +76,43 @@ class EditingPollController {
             HttpHeaders.contentTypeHeader: 'application/json',
           },
           body: jsonEncode(body));
-      return "PS-0000";
-    }
+      
+      switch (response.statusCode) {
+        case 201: 
+          return "ok";
+        
+        default: 
+          return "error";
+      }
+      
+      
+      
+      
+      
   }
 
-      deletingOption(optionId) async {
+  Future<String> creatingOptions(List<String>optionsName, String pollId) async {
+    Map<String, dynamic> body = {"optionsName": optionsName, "pollId": pollId};
+    print(body);
+    print(jsonEncode(body));
 
-      var url =
-      Uri.parse("$_listApi/option/$optionId");
-      var token = {};
-      await accessToken().then((value) {
-        token = value;
-      });
-      var response = await http.delete(url,
-          headers: {
-            HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
-            HttpHeaders.contentTypeHeader: 'application/json',
-          },
-      );
-    }
-
-  Future <String>creatingOption(name, pollId) async {
-
-    Map<String, dynamic> body = {
-      "name":"$name",
-      "pollId":"$pollId"
-    };
-
-    var url =
-    Uri.parse("$_listApi/option/new");
+    var url = Uri.parse("$_listApi/option/new");
     var token = {};
     await accessToken().then((value) {
       token = value;
     });
-    var response = await http.post(url,
+    var response = await http.post(
+      url,
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
         HttpHeaders.contentTypeHeader: 'application/json',
-      }, body: jsonEncode(body),
+      },
+      body: jsonEncode(body),
     );
-    print(response);
+    print(response.body);
     return "PS-0000";
   }
-  }
+}
 
 class PollControllerNotNull {
   ValueNotifier<PollModelNotNull> poll =
@@ -238,7 +223,8 @@ class CreatingPollController {
       body: jsonEncode(body),
     );
 
-    PollModelCreating createpoll = PollModelCreating.fromJson(jsonDecode(response.body));
+    PollModelCreating createpoll =
+        PollModelCreating.fromJson(jsonDecode(response.body));
 
     if (response.statusCode == 201) {
       return ["PS-0000", createpoll.id!];
@@ -247,8 +233,8 @@ class CreatingPollController {
     }
   }
 
-  createPollOptions(name, pollId) async {
-    Map<String, dynamic> body = {"name": "$name", "pollId": "$pollId"};
+  createPollOptions(List<String>optionsName, String pollId) async {
+    Map<String, dynamic> body = {"optionsName": optionsName, "pollId": pollId};
 
     var url = Uri.parse("$_listApi/option/new");
     var token = {};

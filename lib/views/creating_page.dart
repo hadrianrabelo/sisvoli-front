@@ -20,7 +20,7 @@ class _RegisterPageState extends State<CreatingPage> {
   DateTime dateTime = DateTime(2022, 02, 02, 12, 00);
   DateTime dateTimeSecond = DateTime(2022, 02, 02, 12, 00);
   DateTime compareDate = DateTime(2022, 02, 02, 12, 00);
-  List listChooses = [null];
+  List<String> listChooses = [];
   List listResult = [null];
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -509,12 +509,8 @@ class _RegisterPageState extends State<CreatingPage> {
                               dateTime.toIso8601String(),
                               dateTimeSecond.toIso8601String());
 
-                          for (dynamic element in listChooses) {
-                            print(element);
-                            print(message[1]);
-                            await CreatingPollController().createPollOptions(
-                                element, message[1]);
-                          }
+                          await CreatingPollController().createPollOptions(listChooses, message[1]);
+
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

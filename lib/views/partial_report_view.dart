@@ -7,6 +7,7 @@ import 'package:urnavotos/values/background.dart';
 import 'package:intl/intl.dart';
 import 'package:urnavotos/view-models/editing_poll_page_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:urnavotos/views/editing_poll_page.dart';
 import '../repositories/login_repository.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -21,7 +22,6 @@ class PartialReportView extends StatefulWidget {
 class _PartialReportViewState extends State<PartialReportView> {
   final _formKey = GlobalKey<FormState>();
   final _chooseKey = GlobalKey<FormState>();
-  final PollController _controller = PollController();
   String _listApi = dotenv.get("API_HOST", fallback: "");
   Map<String, dynamic>? resultList;
   //Map<String, dynamic> mapResult = {};
@@ -209,7 +209,7 @@ class _PartialReportViewState extends State<PartialReportView> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditingPollPage(pollId: widget.pollId)));
                   },
                   style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(

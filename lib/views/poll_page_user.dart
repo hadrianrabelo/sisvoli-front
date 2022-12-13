@@ -22,7 +22,6 @@ class PollPageUser extends StatefulWidget {
 class _PullPageUserState extends State<PollPageUser> {
   final _formKey = GlobalKey<FormState>();
   final _chooseKey = GlobalKey<FormState>();
-  final PollController _controller = PollController();
   String _listApi = dotenv.get("API_HOST", fallback: "");
   Map<String, dynamic> resultList= {};
   //Map<String, dynamic> mapResult = {};
