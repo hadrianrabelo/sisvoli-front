@@ -105,9 +105,7 @@ class _MenuViewState extends State<MenuView> {
           onTap: () async {
             Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.remove('access_token');
-            await prefs.remove('refresh_token');
-            await prefs.remove('user_cpf');
+            await prefs.clear(); 
           },
         ),
       ],

@@ -100,10 +100,8 @@ class SurveyView extends StatefulWidget {
                                         subtitle: Text(survey.description!, style: const TextStyle(color: Colors.white)),
                                         tileColor: Colors.white,
                                         trailing: const Icon(Icons.arrow_forward_ios_outlined, color: Colors.white,),
-                                        onTap: (){
-                                          //Navigator.pushNamed(context, '/user_poll');
+                                        onTap: () async{
                                           Navigator.push(context, MaterialPageRoute(builder: (context) => PartialReportView(pollId: survey.id!)));
-                                          //aqui fica o navigator para cada pagina
                                         },
                                 ),
                                 ),

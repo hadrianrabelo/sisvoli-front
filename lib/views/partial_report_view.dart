@@ -24,7 +24,6 @@ class _PartialReportViewState extends State<PartialReportView> {
   final _chooseKey = GlobalKey<FormState>();
   String _listApi = dotenv.get("API_HOST", fallback: "");
   Map<String, dynamic>? resultList;
-  //Map<String, dynamic> mapResult = {};
   bool isLoading = true;
   late List<GDPData> _chartData;
   String? winner;
@@ -32,7 +31,7 @@ class _PartialReportViewState extends State<PartialReportView> {
   @override
   void initState() {
     getPollResult(idPoll: widget.pollId);
-    _chartData = getChartData();
+
     super.initState();
   }
 
@@ -117,7 +116,7 @@ class _PartialReportViewState extends State<PartialReportView> {
                         height: 5,
                       ),
                       Text(
-                        " Total: ${resultList != null ? ['voteCount'] : 0}",
+                        " Total: ${resultList != null ? resultList!['voteCount'] : 0}",
                         style: const TextStyle(
                           color: Color.fromRGBO(38, 110, 215, 100),
                           fontSize: 17,
@@ -136,7 +135,7 @@ class _PartialReportViewState extends State<PartialReportView> {
                             dataSource: _chartData,
                             xValueMapper: (GDPData data,_) => data.name,
                             yValueMapper: (GDPData data,_) => data.totalVotes,
-                            dataLabelSettings: DataLabelSettings(isVisible: resultList == null ? false : true),
+                            dataLabelSettings: DataLabelSettings(isVisible: resultList == null ? false : true, textStyle: TextStyle(color: Colors.white)),
                           )
                         ],
                       ),
@@ -183,6 +182,24 @@ class _PartialReportViewState extends State<PartialReportView> {
                         ),
                       ]),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text( resultList == null ? ""
+                              : resultList!['pollId']["status"]=="PROGRESS" ? "ENQUETE EM PROGRESSO..."
+                              : resultList!['pollId']["status"]=="FINALIZED" ? "ENQUETE FINALIZADA"
+                              : resultList!['pollId']["status"]=="CANCELED" ? "ENQUETE CANCELADA"
+                              : resultList!['pollId']["status"]=="SCHEDULED" ? "ENQUETE AGENDADA"
+                              : "",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontFamily: "Inter",
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01,),
                     ],
                   ),
                 ),
@@ -195,7 +212,44 @@ class _PartialReportViewState extends State<PartialReportView> {
         color: const Color.fromARGB(255, 1, 1, 1),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
+          child: resultList == null
+              || resultList!['pollId']["status"]=="FINALIZED"
+              || resultList!['pollId']["status"]=="CANCELED"
+              ?
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 48,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.9,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditingPollPage(pollId: widget.pollId)));
+                  },
+                  style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                        Color.fromRGBO(38, 110, 215, 1.0)),
+                  ),
+                  child: const Text(
+                    "Voltar",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Roboto',
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ) :
+          resultList!['pollId']["status"]=="SCHEDULED"
+              ?
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
@@ -224,10 +278,7 @@ class _PartialReportViewState extends State<PartialReportView> {
                   ),
                 ),
               ),
-              Container(
-                height: 0,
-                width: MediaQuery.of(context).size.width*0.03,
-              ),
+              SizedBox(height: 0,width: MediaQuery.of(context).size.width * 0.03,),
               Container(
                 height: 48,
                 width: MediaQuery
@@ -246,6 +297,70 @@ class _PartialReportViewState extends State<PartialReportView> {
                         Colors.red),
                   ),
                   child: Icon(Icons.close),
+                ),
+              ),
+            ],
+          ) :
+          resultList!['pollId']["status"]=="PROGRESS"
+              ?
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 48,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.9,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditingPollPage(pollId: widget.pollId)));
+                  },
+                  style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                        Colors.red),
+                  ),
+                  child: const Text(
+                    "Finalizar Enquete",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Roboto',
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ):
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 48,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.9,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditingPollPage(pollId: widget.pollId)));
+                  },
+                  style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                        Color.fromRGBO(38, 110, 215, 1.0)),
+                  ),
+                  child: const Text(
+                    "Voltar",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Roboto',
+                        color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -269,28 +384,28 @@ class _PartialReportViewState extends State<PartialReportView> {
         HttpHeaders.authorizationHeader: "Bearer ${token['access_token']}",
       },
     );
-    //isLoading = false;
     if(response.statusCode == 200){
       Map<String, dynamic> mapResult = jsonDecode(const Utf8Decoder().convert(response.bodyBytes));
       setState(() {
-        isLoading = false;
         resultList = mapResult;
+        _chartData = getChartData();
+        isLoading = false;
       });
     }else if(response.statusCode == 403){
       print(response.body);
-      setState(() {
-        isLoading = false;
-        resultList = null;
-      });
+
+    }else{
+      print(response.body);
+      print("Erro");
     }
+    print(response.body);
   }
   List<GDPData> getChartData(){
     final List<GDPData> chartData = [];
     int aux = 0;
     if(resultList != null){
-      List<Map<String, dynamic>> result = resultList!['optionRanking'];
-      print(result.length);
-
+      print(resultList!['optionRanking']);
+      List result = resultList!['optionRanking'];
       for (int i = 0; i <= result.length - 1; i++) {
         setState(() {
           if (result[i]['totalVotes'] > aux) {
