@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:urnavotos/repositories/creating_poll_repository.dart';
 import 'package:urnavotos/values/background.dart';
 import 'package:intl/intl.dart';
+import 'package:urnavotos/views/partial_report_view.dart';
 import '../view-models/editing_poll_page_model.dart';
 
 class EditingPollPage extends StatefulWidget {

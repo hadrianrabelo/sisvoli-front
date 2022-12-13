@@ -125,8 +125,11 @@ class _PartialReportViewState extends State<PartialReportView> {
                       ),
                       SfCircularChart(
                         legend: Legend(
+                          shouldAlwaysShowScrollbar: true,
+                          backgroundColor: Colors.white10,
                           isVisible: true,
-                          overflowMode: LegendItemOverflowMode.scroll,
+                          overflowMode: LegendItemOverflowMode.wrap,
+                          orientation: LegendItemOrientation.vertical,
                           textStyle: const TextStyle(color: Colors.white),
                           position: LegendPosition.bottom,
                         ),
@@ -162,7 +165,7 @@ class _PartialReportViewState extends State<PartialReportView> {
                         TextFormField(
                           enableInteractiveSelection: false,
                           focusNode: AlwaysDisabledFocusNode(),
-                          initialValue: "$winner",
+                          initialValue: winner ?? " ",
                           textAlign: TextAlign.center,
                           //textAlignVertical: TextAlignVertical.center,
                           style: const TextStyle(
