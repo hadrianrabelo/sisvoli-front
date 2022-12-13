@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import '../view-models/editing_poll_page_model.dart';
 
 class EditingPollPage extends StatefulWidget {
-  const EditingPollPage({Key? key}) : super(key: key);
+  final String pollId;
+  const EditingPollPage({Key? key, required this.pollId}) : super(key: key);
 
   @override
   State<EditingPollPage> createState() => _EditingPollPageState();
@@ -14,13 +15,17 @@ class EditingPollPage extends StatefulWidget {
 class _EditingPollPageState extends State<EditingPollPage> {
   final _formKey = GlobalKey<FormState>();
   final _chooseKey = GlobalKey<FormState>();
-  final PollController _controller = PollController();
+  final EditingPollController _controller = EditingPollController();
   late int length = _controller.poll.value.optionList!.length;
+  late String message;
+  List<dynamic>listOptChanges = [];
 
   @override
   void initState() {
-    _controller.getPollSec();
     super.initState();
+    _controller.getPollSec(widget.pollId).then((result) {
+      setState(() {});
+    });
   }
 
   @override
@@ -555,7 +560,7 @@ class _EditingPollPageState extends State<EditingPollPage> {
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     ),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         var chooseValid =
                             _chooseKey.currentState?.validate() ?? false;
                         var formValid =
@@ -578,15 +583,62 @@ class _EditingPollPageState extends State<EditingPollPage> {
                                     "As datas de inicio e fim devem ser diferentes"));
                           } */
                           if (formValid & chooseValid) {
-                            _controller.sendPollData(
-                                _controller.poll.value.title, _controller.poll.value.description,
-                                _controller.poll.value.startDate, _controller.poll.value.endDate);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                EditingPollPageModel()
-                                    .snackBarSucess(_controller.returnMessage ?? "erro"));
-                          }
-                        }
-                      },
+                            print("teste ${_controller.description}");
+                            message = await _controller.sendPollData(
+                                "${_controller.poll.value.title}", "${_controller.description}",
+                                "${_controller.poll.value.startDate}",
+                                "${_controller.poll.value.endDate}", widget.pollId);
+
+                            List<dynamic> diference = _controller.list.toSet().difference(_controller.compareList.toSet()).toList();
+                            if (diference.isNotEmpty){
+                              for(int a = 0; length > a; a++) {
+                                if(_controller.list[a] != _controller.compareList[a]) {
+                                  await _controller.deletingOption(_controller.poll.value.optionList![a].id);
+                                  await _controller.creatingOption(_controller.list[a], _controller.poll.value.id);
+                                }
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 1),
+                                  content: Text(
+                                      "Alterações salvas com sucesso"),
+                                  backgroundColor: Colors.green,
+                                ),
+                              ).closed.whenComplete(() => Navigator.pop(context));
+                            } else {
+                              if(await message == "PS-0001") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    duration: Duration(seconds: 1),
+                                    content: Text(
+                                        "Sem alterações"),
+                                    backgroundColor: Colors.grey,
+                                  ),
+                                ).closed.whenComplete(() => Navigator.of(context).pop());
+                              }
+                              else if (await message == "PS-0000") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    duration: Duration(seconds: 1),
+                                    content: Text(
+                                        "Alterações realizadas"),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                ).closed.whenComplete(() => Navigator.of(context).pop());
+                              } else{
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        "Erro, tente novamente"),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            }
+
+                            }
+                            }
+                          },
                       style: const ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(
                             Color.fromRGBO(38, 110, 215, 1.0)),
