@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sisvoli',
       debugShowCheckedModeBanner: false,
-      home: PartialReportView(pollId: "1546cadf-c143-4590-a74a-eab8cf02b8da"),
-     //initialRoute: '/login',
+      //home: PartialReportView(pollId: "1546cadf-c143-4590-a74a-eab8cf02b8da"),
+     initialRoute: '/login',
       routes: {
         '/login':(context) => const LoginView(),
         '/survey':(context) => const SurveyView(),
