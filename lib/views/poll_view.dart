@@ -30,7 +30,6 @@ class _PollViewState extends State<PollView> {
   int pageNumber = 0;
   bool isLoading = false;
   bool isLastPage = false;
-  String _listApi = dotenv.get("API_HOST", fallback: "");
   infiniteScrolling(){
     if(_scrollController.offset == _scrollController.position.maxScrollExtent){
       if(isLastPage == false){
@@ -179,7 +178,7 @@ class _PollViewState extends State<PollView> {
         token = value;
       });
     });
-    var url = Uri.parse('$_listApi/poll/list?pageSize=$pageSize&pageNumber=$pageNumber');
+    var url = Uri.parse('http://54.174.200.131:8080/poll/list?pageSize=$pageSize&pageNumber=$pageNumber');
     var response = await http.get(url,
         headers:{
           HttpHeaders.contentTypeHeader:'application/json',

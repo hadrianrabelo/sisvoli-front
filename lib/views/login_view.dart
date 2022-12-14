@@ -54,6 +54,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     Container(height: MediaQuery.of(context).size.height * .15),
                     TextFormField(
+                      keyboardType: TextInputType.number,
                       controller: _cpfController,
                         //onChanged: loginViewModel.(value) => ,
                         validator: (cpf){

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-String _listApi = dotenv.get("API_HOST", fallback: "");
 
 class UserRegister {
 
@@ -20,7 +19,7 @@ class UserRegister {
       "username": "$username"
     };
 
-    var url = Uri.parse("$_listApi/user/new");
+    var url = Uri.parse("http://54.174.200.131:8080/user/new");
     var response = await http.post(
       url,
       headers: {HttpHeaders.contentTypeHeader: 'application/json'},

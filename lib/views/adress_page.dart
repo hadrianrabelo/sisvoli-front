@@ -15,7 +15,6 @@ class AdressPage extends StatefulWidget {
 }
 
 class _AdressPageState extends State<AdressPage> {
-  String _listApi = dotenv.get("API_HOST", fallback: "");
   final _formKey = GlobalKey<FormState>();
   late Future<Map<String,dynamic>> estados;
   late Future<List<String>> estado;
@@ -483,7 +482,7 @@ class _AdressPageState extends State<AdressPage> {
         token = value;
       });
     });
-    var url = Uri.parse("$_listApi/address/");
+    var url = Uri.parse("http://54.174.200.131:8080/address/");
     var response = await http.get(
         url,
         headers: {
@@ -521,7 +520,7 @@ class _AdressPageState extends State<AdressPage> {
         token = value;
       });
     });
-    var url = Uri.parse('$_listApi/address/');
+    var url = Uri.parse('http://54.174.200.131:8080/address/');
     Map<String, String> bodyContent = {
       "zipCode": zipCode,
       "number": number,
@@ -561,7 +560,7 @@ class _AdressPageState extends State<AdressPage> {
     return response.statusCode;
   }
   Future<int> registerAddress({zipCode,number,street,district,complement,cityId}) async{
-    var url = Uri.parse('$_listApi/address/');
+    var url = Uri.parse('http://54.174.200.131:8080/address/');
     var token = {};
     await accessToken().then((value) {
       setState(() {
@@ -587,7 +586,7 @@ class _AdressPageState extends State<AdressPage> {
   }
   Future getStateList() async{
     //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTc2OTQwNzA1NyIsInJvbGUiOiJERUZBVUxUIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwMjc0OTkwfQ.9NKf88Ypds7cWD5m_QckFXG_wsv2Fo5ithIGGH_SQAY';
-    var url = Uri.parse('$_listApi/state/all');
+    var url = Uri.parse('http://54.174.200.131:8080/state/all');
     var token = {};
     await accessToken().then((value) {
       setState(() {
@@ -604,7 +603,7 @@ class _AdressPageState extends State<AdressPage> {
     });
   }
   Future _getCityById({id}) async{
-    var url = Uri.parse('$_listApi/city/$id');
+    var url = Uri.parse('http://54.174.200.131:8080/city/$id');
     var token = {};
     await accessToken().then((value) {
       setState(() {
@@ -626,7 +625,7 @@ class _AdressPageState extends State<AdressPage> {
     //print(jsonDecode(const Utf8Decoder().convert(response.bodyBytes))['stateId']);
   }
   Future _getCitiesList({state}) async{
-    var url = Uri.parse('$_listApi/state/$state/cities');
+    var url = Uri.parse('http://54.174.200.131:8080/state/$state/cities');
     var token = {};
     await accessToken().then((value) {
       setState(() {

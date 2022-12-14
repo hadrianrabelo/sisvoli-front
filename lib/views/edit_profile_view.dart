@@ -20,7 +20,6 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
-  String _listApi = dotenv.get("API_HOST", fallback: "");
   bool _isHiddenPassFirst = true;
   bool _isHiddenPassSecond = true;
   final _formKey = GlobalKey<FormState>();
@@ -429,7 +428,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     ),
   );
   Future<void> getUser() async{
-    var url = Uri.parse("$_listApi/user/user-data");
+    var url = Uri.parse("http://54.174.200.131:8080/user/user-data");
     var token = {};
     await accessToken().then((value) {
       setState(() {
@@ -499,7 +498,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       }
     });*/
     print(jsonEncode(bodyContent));
-    var url = Uri.parse("$_listApi/user/update");
+    var url = Uri.parse("http://54.174.200.131:8080/user/update");
     var response = await http.put(
       url,
       headers:{

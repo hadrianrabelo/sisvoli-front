@@ -9,7 +9,9 @@ import '../models/poll_model.dart';
 import '../models/poll_result_model.dart';
 import 'login_repository.dart';
 
-String _listApi = dotenv.get("API_HOST", fallback: "");
+
+
+
 
 class EditingPollController {
   ValueNotifier<PollModelNotNull> poll =
@@ -22,7 +24,7 @@ class EditingPollController {
   String? description;
 
   getPollSec(pollId) async {
-    var url = Uri.parse("$_listApi/poll/list/$pollId");
+    var url = Uri.parse("http://54.174.200.131:8080/poll/list/$pollId");
     var token = {};
     await accessToken().then((value) {
       token = value;
@@ -59,7 +61,7 @@ class EditingPollController {
       };
       print(body.values);
       print(body.keys);
-      var url = Uri.parse("$_listApi/poll/put/$pollId");
+      var url = Uri.parse("http://54.174.200.131:8080/poll/put/$pollId");
       var token = {};
       await accessToken().then((value) {
         token = value;
@@ -90,7 +92,7 @@ class EditingPollController {
     print(body);
     print(jsonEncode(body));
 
-    var url = Uri.parse("$_listApi/option/new");
+    var url = Uri.parse("http://54.174.200.131:8080/option/new");
     var token = {};
     await accessToken().then((value) {
       token = value;
@@ -118,9 +120,10 @@ class PollControllerNotNull {
   String? description;
   String? returnMessage;
   String? title;
+  bool isNotStarted = false;
 
   Future getPollSec({pollId}) async {
-    var url = Uri.parse("$_listApi/poll/list/$pollId");
+    var url = Uri.parse("http://54.174.200.131:8080/poll/list/$pollId");
     var token = {};
     await accessToken().then((value) {
       token = value;
@@ -130,7 +133,7 @@ class PollControllerNotNull {
       HttpHeaders.authorizationHeader: 'Bearer ${token['access_token']}',
     });
     if (response.statusCode == 200) {
-      poll.value = (PollModelNotNull.fromJson(jsonDecode(response.body)));
+      poll.value = (PollModelNotNull.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes))));
       dateTime = DateFormat("yyyy-MM-ddThh:mm:ss").parse(poll.value.startDate!);
       dateTimeSecond =
           DateFormat("yyyy-MM-ddThh:mm:ss").parse(poll.value.endDate!);
@@ -140,6 +143,9 @@ class PollControllerNotNull {
         list.insert(a, poll.value.optionList![a].name);
       }
       isValid = false;
+    if(poll.value.status == "SCHEDULED") {
+      isNotStarted = true;
+    }
     }
     if (response.statusCode != 200) {
       return "logue novamente";
@@ -147,7 +153,7 @@ class PollControllerNotNull {
   }
 
   Future<String> vote(optionId) async {
-    var url = Uri.parse("$_listApi/option/$optionId/vote");
+    var url = Uri.parse("http://54.174.200.131:8080/option/$optionId/vote");
     var token = {};
     await accessToken().then((value) {
       token = value;
@@ -175,7 +181,7 @@ class PollResultController {
 
   getPollSec() async {
     var url = Uri.parse(
-        "$_listApi/poll/indicators/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
+        "http://54.174.200.131:8080/poll/indicators/f9c4e7b0-a71e-405d-88a5-c4ab646e3382");
     var token = {};
     await accessToken().then((value) {
       token = value;
@@ -185,7 +191,7 @@ class PollResultController {
     });
 
     if (response.statusCode == 200) {
-      pollResult = (PollResultModel.fromJson(jsonDecode(response.body)));
+      pollResult = (PollResultModel.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes))));
       isValid = false;
     }
     if (response.statusCode != 200) {}
@@ -203,7 +209,7 @@ class CreatingPollController {
       "endDate": "$endDate"
     };
 
-    var url = Uri.parse("$_listApi/poll/new");
+    var url = Uri.parse("http://54.174.200.131:8080/poll/new");
     var token = {};
     await accessToken().then((value) {
       token = value;
@@ -218,7 +224,7 @@ class CreatingPollController {
     );
 
     PollModelCreating createpoll =
-        PollModelCreating.fromJson(jsonDecode(response.body));
+        PollModelCreating.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes)));
 
     if (response.statusCode == 201) {
       return ["PS-0000", createpoll.id!];
@@ -230,7 +236,7 @@ class CreatingPollController {
   createPollOptions(List<String>optionsName, String pollId) async {
     Map<String, dynamic> body = {"optionsName": optionsName, "pollId": pollId};
 
-    var url = Uri.parse("$_listApi/option/new");
+    var url = Uri.parse("http://54.174.200.131:8080/option/new");
     var token = {};
     await accessToken().then((value) {
       token = value;

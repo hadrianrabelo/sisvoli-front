@@ -4,12 +4,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-String _listApi = dotenv.get("API_HOST", fallback: "");
 SaveSession session = SaveSession();
 
 Future<int?> userLogin({cpf, userPassword}) async{
   try{
-    var url = Uri.parse('$_listApi/login');
+    var url = Uri.parse('http://54.174.200.131:8080/login');
     var response = await http.post(url, body:{'userDocument':'$cpf', 'password':'$userPassword'});
     if(response.statusCode == 200){
       Map<String, dynamic> map = jsonDecode(response.body);
@@ -66,7 +65,7 @@ Future<Map<String,dynamic>> accessToken() async{
 }
 Future refreshToken({expiredToken}) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var url = Uri.parse('$_listApi/user/refresh-token');
+  var url = Uri.parse('http://54.174.200.131:8080/user/refresh-token');
   var response = await http.get(url,
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',

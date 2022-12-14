@@ -17,7 +17,6 @@ class MenuView extends StatefulWidget {
 }
 
 class _MenuViewState extends State<MenuView> {
-  String _listApi = dotenv.get("API_HOST", fallback: "");
   late Map<String, dynamic> userName = {};
   final urlImage = 'assets/images/sisvoli.png';
   @override
@@ -118,7 +117,7 @@ class _MenuViewState extends State<MenuView> {
         token = value;
       });
     });
-    var url = Uri.parse("$_listApi/user/user-data/");
+    var url = Uri.parse("http://54.174.200.131:8080/user/user-data/");
     var response = await http.get(
       url,
       headers: {

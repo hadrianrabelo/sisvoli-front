@@ -22,7 +22,6 @@ class PollPageUser extends StatefulWidget {
 class _PullPageUserState extends State<PollPageUser> {
   final _formKey = GlobalKey<FormState>();
   final _chooseKey = GlobalKey<FormState>();
-  String _listApi = dotenv.get("API_HOST", fallback: "");
   Map<String, dynamic> resultList= {};
   //Map<String, dynamic> mapResult = {};
   bool isLoading = true;
@@ -237,7 +236,7 @@ class _PullPageUserState extends State<PollPageUser> {
         token = value;
       });
     });
-    var url = Uri.parse("$_listApi/poll/indicators/$idPoll");
+    var url = Uri.parse("http://54.174.200.131:8080/poll/indicators/$idPoll");
     var response = await http.get(
       url,
       headers: {

@@ -23,7 +23,6 @@ class SurveyView extends StatefulWidget {
   late Future<List<SurveyModel>> surveys;
   late final ScrollController _scrollController;
   int currentTab = 0;
-  String _listApi = dotenv.get("API_HOST", fallback: "");
 
   @override
  void initState() {
@@ -155,7 +154,7 @@ class SurveyView extends StatefulWidget {
         });
       });
       print("$token");
-      var url = Uri.parse('$_listApi/poll/list/my');
+      var url = Uri.parse('http://54.174.200.131:8080/poll/list/my');
       var response = await http.get(url,
           headers:{
             HttpHeaders.contentTypeHeader:'application/json',

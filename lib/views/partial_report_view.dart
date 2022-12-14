@@ -22,7 +22,6 @@ class PartialReportView extends StatefulWidget {
 class _PartialReportViewState extends State<PartialReportView> {
   final _formKey = GlobalKey<FormState>();
   final _chooseKey = GlobalKey<FormState>();
-  String _listApi = dotenv.get("API_HOST", fallback: "");
   Map<String, dynamic>? resultList;
   bool isLoading = true;
   late List<GDPData> _chartData;
@@ -379,7 +378,7 @@ class _PartialReportViewState extends State<PartialReportView> {
         token = value;
       });
     });
-    var url = Uri.parse("$_listApi/poll/indicators/$idPoll");
+    var url = Uri.parse("http://54.174.200.131:8080/poll/indicators/$idPoll");
     var response = await http.get(
       url,
       headers: {
